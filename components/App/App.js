@@ -25,7 +25,7 @@ export const App = ({ children }) => {
           height={6}
           options={{ showSpinner: false, easing: 'ease' }}
         />
-      <Header/>
+      <Header storeConfig={store} />
         <div className={styles.content}>{children}</div>
       <Footer/>
       </div>

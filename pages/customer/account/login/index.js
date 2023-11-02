@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { Container, Typography, TextField, Button } from '@mui/material';
 import { LOGIN_MUTATION } from '../../../../components/Customer/Login/CustomerLoginGraphql';
+import Link from 'next/link';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -47,6 +48,18 @@ const LoginPage = () => {
           <Button variant="contained" color="primary" onClick={handleLogin}>
             Login
           </Button>
+          <Button variant="contained" color="primary">
+            <Link
+                href={{
+                pathname: "/customer/account/create",
+                query: { type: "CMS" },
+                }}
+                as={"/customer/account/create"}
+            >
+                Sign Up
+            </Link>
+          </Button>
+          
         </form>
       </div>
     </Container>
