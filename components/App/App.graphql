@@ -7,6 +7,12 @@ query App {
     logo_alt
     header_logo_src
     copyright
+    front
+    cms_home_page
+    no_route
+    cms_no_route
+    cms_no_cookies
+    show_cms_breadcrumbs
   }
 
   categoryList {

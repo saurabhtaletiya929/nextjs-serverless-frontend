@@ -29,7 +29,7 @@ export const Category = ({ filters }) => {
   return (
     <>
       <Head>
-        <title>{category.name}</title>
+        <title>{category?.name}</title>
       </Head>
 
       <div className={styles.category}>

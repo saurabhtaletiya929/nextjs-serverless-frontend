@@ -1,0 +1,30 @@
+/* NavigationMenu.css */
+
+/* Style the navigation menu container */
+.navigationMenu {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+}
+
+/* Style the top-level list items */
+.navigationMenu ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* Style the list items */
+.navigationMenu li {
+  margin: 5px 0;
+}
+
+/* Style the links */
+.navigationMenu a {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Style the nested lists */
+.navigationMenu ul ul {
+  padding-left: 20px;
+}

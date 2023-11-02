@@ -4,6 +4,7 @@ import styles from './Header.module.css'
 import APP_QUERY from '../App/App.graphql'
 import Link from 'next/link'
 import { resolveImage } from '~/lib/resolve-image'
+import NavigationMenu from './NavigationMenu'
 
 export const Header = ({ children }) => {
   const { data } = useQuery(APP_QUERY)
@@ -30,6 +31,7 @@ export const Header = ({ children }) => {
               />
           </Link>
           <nav className={styles.categoriesWrapper}>
+            <NavigationMenu storeConfig={store}/>
             <ul className={styles.categories}>
               {categories?.map((category) => (
                 <li key={category.id}>
