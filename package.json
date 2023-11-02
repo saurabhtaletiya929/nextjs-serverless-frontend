@@ -1,0 +1,26 @@
+{
+  "name": "nextjs-with-magento",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Saurabh Taletiya",
+  "license": "MIT",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.8.6",
+    "graphql": "^15.8.0",
+    "http-proxy-middleware": "^1.0.5",
+    "next": "^14.0.0",
+    "nextjs-progressbar": "^0.0.16",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "reset-css": "^5.0.1",
+    "use-debounce": "^5.0.1"
+  },
+  "devDependencies": {
+    "graphql-tag": "^2.11.0"
+  }
+}
