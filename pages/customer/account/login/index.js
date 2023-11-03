@@ -5,11 +5,12 @@ import { useMutation } from '@apollo/client';
 import { Container, Typography, TextField, Button } from '@mui/material';
 import { LOGIN_MUTATION } from '../../../../components/Customer/Login/CustomerLoginGraphql';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const router = useRouter();
   const [login] = useMutation(LOGIN_MUTATION);
 
   const handleLogin = async () => {
@@ -17,8 +18,15 @@ const LoginPage = () => {
       const { data } = await login({
         variables: { email, password },
       });
+      if(data?.generateCustomerToken?.token) {
+        router.push('/customer/account');
+      } else {
+        router.push('/customer/account/login');
+      }
+      
       // Handle successful login and routing to the dashboard or profile page.
     } catch (error) {
+        console.error('Authentication failed', error);
       // Handle login error (e.g., display an error message).
     }
   };

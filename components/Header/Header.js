@@ -9,6 +9,9 @@ import { styled, alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
+import { useState } from "react";
+import { useDebounce } from "use-debounce";
+import { useCallback } from "react";
 
 const classes = makeStyles((theme) => ({
   header: {
@@ -63,6 +66,18 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export const Header = (props, { children }) => {
   const store = props?.storeConfig;
+  const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 500)
+
+  const handleSearch = useCallback(
+    (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      setSearchQuery(searchQuery)
+    },
+    [searchQuery]
+  )
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="transparent">
@@ -98,6 +113,7 @@ export const Header = (props, { children }) => {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
+              onChange={(e) => setSearchQuery(e.currentTarget.value)}
             />
           </Search>
         </Toolbar>
