@@ -71,7 +71,7 @@ export const NavigationMenu = (props) => {
   if (error) return `Error! ${error.message}`;
 
   return (
-    <ListItem>
+    <ListItem style={{ backgroundColor: "grey"}}>
       {data.categoryList.map((category) => (
         <CategoryItem
           key={category.id}
