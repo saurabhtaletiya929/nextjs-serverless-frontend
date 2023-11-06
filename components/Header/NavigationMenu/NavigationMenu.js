@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import styles from "./NavigationMenu.module.css";
 
 
 
@@ -26,25 +27,50 @@ const classes = makeStyles((theme)  => ({
   subCategoryList: {
     paddingLeft: theme.spacing(2),
   },
+  category: {
+    textDecoration: none,
+  }
 }));
 
 const CategoryItem = ({ category, categoryUrlSuffix }) => {
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
 
-  const toggleSubcategories = () => {
-    setOpen(!open);
+  // const toggleSubcategories = () => {
+  //   setOpen(!open);
+  // };
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
   };
 
   return (
-    <div>
-      <ListItem  onClick={toggleSubcategories}>
+    <div
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <Link
+        href={{
+          pathname: `/${category.url_path + categoryUrlSuffix}`,
+          query: { type: "CATEGORY" },
+        }}
+        as={`/${category.url_path + categoryUrlSuffix}`}
+      >
+      <ListItem>
         <ListItemText primary={category.name} />
         {category.children && category.children.length > 0 && (
-          open ? <ArrowDropDownIcon /> : <ArrowRightIcon />
+          isHovered ? <ArrowDropDownIcon /> : <ArrowRightIcon />
         )}
       </ListItem>
-      {category.children && category.children.length > 0 && open && (
-        <List className={classes.subCategoryList}>
+      </Link>
+      
+      {category.children && category.children.length > 0 && isHovered && (
+        <List className={classes.subCategoryList} cl>
           {category.children.map((child) => (
             <Link
               key={child.id}
@@ -71,7 +97,7 @@ export const NavigationMenu = (props) => {
   if (error) return `Error! ${error.message}`;
 
   return (
-    <ListItem style={{ backgroundColor: "grey"}}>
+    <ListItem className={styles.navigationMenu}>
       {data.categoryList.map((category) => (
         <CategoryItem
           key={category.id}
@@ -98,15 +124,15 @@ export const NavigationMenu = (props) => {
 
 //   // const renderCategory = (category) => (
 //   //   <MenuList key={category.id} className={classes.listItem}>
-//   //     <Link
-//   //       href={{
-//   //         pathname: `/${category.url_path + categoryUrlSuffix}`,
-//   //         query: { type: "CATEGORY" },
-//   //       }}
-//   //       as={`/${category.url_path + categoryUrlSuffix}`}
-//   //     >
-//   //       <ListItemText primary={category.name} />
-//   //     </Link>
+      // <Link
+      //   href={{
+      //     pathname: `/${category.url_path + categoryUrlSuffix}`,
+      //     query: { type: "CATEGORY" },
+      //   }}
+      //   as={`/${category.url_path + categoryUrlSuffix}`}
+      // >
+      //   <ListItemText primary={category.name} />
+      // </Link>
 //   //     {category.children && category.children.length > 0 && (
 //   //       <MenuItem>{category.children.map((child) => renderCategory(child))}</MenuItem>
 //   //     )}

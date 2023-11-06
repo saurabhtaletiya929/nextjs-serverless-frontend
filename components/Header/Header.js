@@ -9,6 +9,9 @@ import { styled, alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
+import Button from '@mui/material/Button';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+
 
 const classes = makeStyles((theme) => ({
   header: {
@@ -64,48 +67,62 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export const Header = (props, { children }) => {
   const store = props?.storeConfig;
   return (
-    <>
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color="transparent">
+    <div>
+      <Box sx={{ flexGrow: 1 }} style={{ backgroundColor: "grey" }}>
         <Toolbar>
-          <Typography variant="h6" className={classes.logo}>
-            <Link href="/">
-              <img
-                src={
-                  store?.header_logo_src
-                    ? resolveImage(
-                        store.base_media_url + "logo/" + store.header_logo_src
-                      )
-                    : "/static/logo.png"
-                }
-                alt={store?.logo_alt ?? "Store"}
-                style={{ width: "100px", height: "auto" }}
-              />
-            </Link>
-          </Typography>
-    
+          <Typography color="white" variant="h6" sx={{ flexGrow: 1 }}>Default welcome msg!</Typography>
           <Link
+            style={{ color: "white"}}
             href={{
               pathname: "/customer/account/login",
               query: { type: "CMS" },
             }}
             as={"/customer/account/login"}
           >
-            <LockOpenIcon fontSize="large" />
+          <LockOpenIcon fontSize="large" />
           </Link>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search>
         </Toolbar>
-      </AppBar>
-    </Box>
-    <div><NavigationMenu storeConfig={store} /></div>
-    </>
+
+      </Box>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static" color="transparent">
+          <Toolbar>
+            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+              <Link href="/">
+                <img
+                  src={
+                    store?.header_logo_src
+                      ? resolveImage(
+                        store.base_media_url + "logo/" + store.header_logo_src
+                      )
+                      : "/static/logo.png"
+                  }
+                  alt={store?.logo_alt ?? "Store"}
+                  style={{ width: "75px", height: "75" }}
+                />
+              </Link>
+            </Typography>
+
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search…"
+                inputProps={{ "aria-label": "search" }}
+              />
+            </Search>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<ShoppingCartIcon />}
+            >
+              Cart
+            </Button>
+          </Toolbar>
+        </AppBar>
+      </Box>
+      <NavigationMenu storeConfig={store} />
+    </div>
   );
 };
