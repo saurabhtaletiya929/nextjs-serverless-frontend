@@ -35,17 +35,17 @@ const NewFooter = () => {
                     <Paper elevation={0} className={styles.box}>
                         <Typography variant="h6">CUSTOMER CARE</Typography>
                         <Typography variant="body2">
-                            <Link href="/about">CONTACT US</Link>
+                            <Link className={styles.footerlinks} href="/about">CONTACT US</Link>
                             <br />
-                            <Link href="/contact">SHIPPING & RETURNS</Link>
+                            <Link className={styles.footerlinks} href="/contact">SHIPPING & RETURNS</Link>
                             <br />
-                            <Link href="/faq">FAQ</Link>
+                            <Link className={styles.footerlinks} href="/faq">FAQ</Link>
                             <br />
-                            <Link href="/faq">MY ACCOUNT</Link>
+                            <Link className={styles.footerlinks} href="/faq">MY ACCOUNT</Link>
                             <br />
-                            <Link href="/faq">REGISTRY</Link>
+                            <Link className={styles.footerlinks} href="/faq">REGISTRY</Link>
                             <br />
-                            <Link href="/faq">SELECT SHIPPING DESTINATION</Link>
+                            <Link className={styles.footerlinks} href="/faq">SELECT SHIPPING DESTINATION</Link>
                         </Typography>
                     </Paper>
                 </Grid>
@@ -53,15 +53,15 @@ const NewFooter = () => {
                     <Paper elevation={0} className={styles.box}>
                         <Typography variant="h6">DISCOVER FRETTE</Typography>
                         <Typography variant="body2">
-                            <Link href="/about">OUR SERVICES</Link>
+                            <Link className={styles.footerlinks} href="/about">OUR SERVICES</Link>
                             <br />
-                            <Link href="/contact">OUR HERITAGE</Link>
+                            <Link className={styles.footerlinks} href="/contact">OUR HERITAGE</Link>
                             <br />
-                            <Link href="/faq">OUR SHOP PARTNERS</Link>
+                            <Link className={styles.footerlinks} href="/faq">OUR SHOP PARTNERS</Link>
                             <br />
-                            <Link href="/faq">SHOP STORIES</Link>
+                            <Link className={styles.footerlinks} href="/faq">SHOP STORIES</Link>
                             <br />
-                            <Link href="/faq">DESIGNER DIALOGUES</Link>
+                            <Link className={styles.footerlinks} href="/faq">DESIGNER DIALOGUES</Link>
                         </Typography>
                     </Paper>
                 </Grid>
@@ -69,19 +69,19 @@ const NewFooter = () => {
                     <Paper elevation={0} className={styles.box}>
                         <Typography variant="h6">INFORMATION</Typography>
                         <Typography variant="body2">
-                            <Link href="/products">STORE LOCATOR</Link>
+                            <Link className={styles.footerlinks} href="/products">STORE LOCATOR</Link>
                             <br />
-                            <Link href="/services">HOSPITALITY PARTNERS</Link>
+                            <Link className={styles.footerlinks} href="/services">HOSPITALITY PARTNERS</Link>
                             <br />
-                            <Link href="/blog">WHOLESALE</Link>
+                            <Link className={styles.footerlinks} href="/blog">WHOLESALE</Link>
                             <br />
-                            <Link href="/blog">DESIGNERS</Link>
+                            <Link className={styles.footerlinks} href="/blog">DESIGNERS</Link>
                             <br />
-                            <Link href="/blog">PRIVACY POLICY</Link>
+                            <Link className={styles.footerlinks} href="/blog">PRIVACY POLICY</Link>
                             <br />
-                            <Link href="/blog">TERMS AND CONDITIONS</Link>
+                            <Link className={styles.footerlinks} href="/blog">TERMS AND CONDITIONS</Link>
                             <br />
-                            <Link href="/blog">CORPORATE RESPONSIBILITY</Link>
+                            <Link className={styles.footerlinks} href="/blog">CORPORATE RESPONSIBILITY</Link>
                         </Typography>
                     </Paper>
                 </Grid>
@@ -95,7 +95,7 @@ const NewFooter = () => {
                         </Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography style={{padding: '0 0 0 170px'}}>
+                        <Typography style={{padding: '0 0 0 170px', textDecoration: "none"}}>
                             Follow us on
                             <a href=''><Instagram fontSize="small" color='primary' /></a>
                             <a href=''><Facebook fontSize="small" color='primary' /></a>

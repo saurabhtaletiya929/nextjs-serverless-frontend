@@ -67,19 +67,19 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export const Header = (props, { children }) => {
   const store = props?.storeConfig;
   return (
-    <div>
+    <Box>
       <Box sx={{ flexGrow: 1 }} style={{ backgroundColor: "grey" }}>
         <Toolbar>
-          <Typography color="white" variant="h6" sx={{ flexGrow: 1 }}>Default welcome msg!</Typography>
+          <Typography style={{ color: "white", margin: "0 250px"}} variant="h6" sx={{ flexGrow: 1 }}>Default welcome msg!</Typography>
           <Link
-            style={{ color: "white"}}
+            style={{ color: "white", margin: "0 250px"}}
             href={{
               pathname: "/customer/account/login",
               query: { type: "CMS" },
             }}
             as={"/customer/account/login"}
           >
-          <LockOpenIcon fontSize="large" />
+          <LockOpenIcon fontSize="medium" />
           </Link>
         </Toolbar>
 
@@ -98,12 +98,12 @@ export const Header = (props, { children }) => {
                       : "/static/logo.png"
                   }
                   alt={store?.logo_alt ?? "Store"}
-                  style={{ width: "75px", height: "75" }}
+                  style={{ width: "75px", height: "75", margin: "0 250px" }}
                 />
               </Link>
             </Typography>
 
-            <Search>
+            <Search style={{margin: "0 250px"}}>
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
@@ -111,18 +111,25 @@ export const Header = (props, { children }) => {
                 placeholder="Search…"
                 inputProps={{ "aria-label": "search" }}
               />
-            </Search>
-            <Button
+              <Button
               variant="contained"
               color="primary"
               startIcon={<ShoppingCartIcon />}
             >
               Cart
             </Button>
+            </Search>
+            {/* <Button
+              variant="contained"
+              color="primary"
+              startIcon={<ShoppingCartIcon />}
+            >
+              Cart
+            </Button> */}
           </Toolbar>
         </AppBar>
       </Box>
       <NavigationMenu storeConfig={store} />
-    </div>
+    </Box>
   );
 };
