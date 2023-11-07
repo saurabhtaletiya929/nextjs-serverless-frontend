@@ -21,7 +21,25 @@ query ProductsQuery(
       current_page
       total_pages
     }
-
+    aggregations {
+      label
+      attribute_code
+      count
+      options {
+        count
+        label
+        value
+      }
+      position
+    }
+    sort_fields {
+      default
+      options {
+        label
+        value
+      }
+    }
+    total_count
     items {
       id
       url_key

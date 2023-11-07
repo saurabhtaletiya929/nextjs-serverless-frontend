@@ -111,13 +111,10 @@ export const Header = (props, { children }) => {
                 placeholder="Search…"
                 inputProps={{ "aria-label": "search" }}
               />
-              <Button
-              variant="contained"
-              color="primary"
-              startIcon={<ShoppingCartIcon />}
-            >
-              Cart
-            </Button>
+              <Link href="/checkout/cart">
+                <ShoppingCartIcon />
+              </Link>
+              
             </Search>
             {/* <Button
               variant="contained"

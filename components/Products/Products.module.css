@@ -59,6 +59,21 @@
   font-size: 0.9em;
 }
 
+.container {
+  display: flex;
+  flex: 1;
+}
+
+.drawer {
+  background: #d8dcd6;
+  width: 240px;
+}
+
+.maincontainer {
+  flex: 1;
+  background: #f7f5f5;
+}
+
 /* Tablet */
 @media (min-width: 600px) {
   .productsList {
