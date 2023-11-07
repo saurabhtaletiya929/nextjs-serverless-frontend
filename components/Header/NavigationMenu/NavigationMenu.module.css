@@ -28,3 +28,23 @@
 .navigationMenu ul ul {
   padding-left: 20px;
 }
+
+.categoryItem {
+  position: relative;
+  display: inline-block;
+}
+
+.subMenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding: 10px;
+  background-color: white;
+  z-index: 1;
+}
+
+
+.categoryItem:hover .subMenu {
+  display: block;
+}
