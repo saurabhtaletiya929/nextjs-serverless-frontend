@@ -17,8 +17,9 @@ const ForgotPassword = () => {
     }
   };
   return (
-    <div style={{ margin: "20px 650px" }}>
-      <Typography variant='h5'>Forgot Password</Typography>
+    <div style={{ margin: "20px 600px" }}>
+      <Typography variant='h5' style={{ margin: "30px 0 50px 0"}}>Forgot Your Password?</Typography>
+      <Typography>Please enter your email address below to receive a password reset link.</Typography>
 
       <form>
         <TextField
@@ -33,7 +34,8 @@ const ForgotPassword = () => {
         <Button 
         variant="contained" 
         color="primary"
-        onClick={handleSubmit}>
+        onClick={handleSubmit}
+        style={{margin: "30px 0"}}>
         Send Email
         </Button>
       </form>
