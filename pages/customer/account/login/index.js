@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { Container, Typography, TextField, Button } from '@mui/material';
+import { Typography, TextField, Button, Grid } from '@mui/material';
 import { LOGIN_MUTATION } from '../../../../components/Customer/Login/CustomerLoginGraphql';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -32,9 +32,12 @@ const LoginPage = () => {
   };
 
   return (
-    <Container maxWidth="xs">
-      <div>
-        <Typography variant="h5">Login</Typography>
+    <div>
+      <Typography variant="h5" style={{margin: "20px 450px"}}>Customer Login</Typography>
+      <Grid container maxWidth="xs" spacing={2} style={{margin: "20px 450px"}}>
+        <Grid>
+        <Typography style={{margin: "20px 0"}}>Registered Customers</Typography>
+        <Typography>If you have an account, sign in with your email address.</Typography>
         <form>
           <TextField
             label="Email"
@@ -53,11 +56,28 @@ const LoginPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <Typography>
+            <Link
+            href={{
+              pathname: "/customer/account/forgotpassword",
+              query: { type: "CMS" },
+              }}
+              as={"/customer/account/forgotpassword"}
+              >
+              Forgot Your Password?
+            </Link>
+            </Typography>
           <Button variant="contained" color="primary" onClick={handleLogin}>
             Login
           </Button>
-          <Button variant="contained" color="primary">
+        </form>
+      </Grid>
+      <Grid item xs={6}>
+        <Typography>New Customers</Typography>
+        <Typography style={{margin: "20px 0"}}>Creating an account has many benefits: check out faster, <br></br> keep more than one address, track orders and more.</Typography>
+        <Button variant="contained" color="primary">
             <Link
+            style={{textDecoration: "none", color: "white"}}
                 href={{
                 pathname: "/customer/account/create",
                 query: { type: "CMS" },
@@ -67,10 +87,9 @@ const LoginPage = () => {
                 Sign Up
             </Link>
           </Button>
-          
-        </form>
+      </Grid>
+      </Grid>
       </div>
-    </Container>
   );
 };
 
