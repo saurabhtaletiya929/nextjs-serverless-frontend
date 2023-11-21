@@ -1,0 +1,16 @@
+.box{
+    background-color: #111130;
+    color: white;
+    text-align: start;
+}
+
+.border{
+    border-color: white;
+    border-radius: 5px;
+}
+
+.footerlinks{
+    text-decoration: none;
+    color: white;
+    font-size: small;
+}

@@ -1,0 +1,50 @@
+/* NavigationMenu.css */
+
+/* Style the navigation menu container */
+.navigationMenu {
+  background-color: #f3eeeea9;
+  color: black;
+  padding: 0 250px;
+}
+
+/* Style the top-level list items */
+.navigationMenu ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* Style the list items */
+.navigationMenu li {
+  margin: 5px 0;
+}
+
+/* Style the links */
+.navigationMenu a {
+  color: black;
+  text-decoration: none;
+}
+
+/* Style the nested lists */
+.navigationMenu ul ul {
+  padding-left: 20px;
+}
+
+.categoryItem {
+  position: relative;
+  display: inline-block;
+}
+
+.subMenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding: 10px;
+  background-color: white;
+  z-index: 1;
+}
+
+
+.categoryItem:hover .subMenu {
+  display: block;
+}

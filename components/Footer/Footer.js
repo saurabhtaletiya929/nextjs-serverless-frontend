@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client'
 import React from 'react'
 import styles from './Footer.module.css'
 import CMS_BLOCKS_QUERY from '../CmsBlocks/CmsBlocks.graphql'
+import NewFooter from './NewFooter/NewFooter'
 
 export const Footer = ({ children }) => {
   const { loading, data, error } = useQuery(CMS_BLOCKS_QUERY, {
@@ -14,13 +15,15 @@ export const Footer = ({ children }) => {
   return (
     <>
       <footer className={styles.footer}>
-        <div className="footer-container">
+        {/* <div className="footer-container">
             <div className="footer">
               return <HTMLContent html={cmsBlock?.content} />
             </div>
           <address>copyright</address>
-        </div>
+        </div> */}
+        <NewFooter />
       </footer>
+      
     </>
   )
 }

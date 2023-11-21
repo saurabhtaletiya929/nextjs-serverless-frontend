@@ -29,7 +29,7 @@ export const Category = ({ filters }) => {
   return (
     <>
       <Head>
-        <title>{category.name}</title>
+        <title>{category?.name}</title>
       </Head>
 
       <div className={styles.category}>
@@ -41,9 +41,6 @@ export const Category = ({ filters }) => {
           )}
           <h2>{category.name}</h2>
         </header>
-
-        {/* Show Products only if the Category is set for it */}
-        {category.display_mode && (
           <>
             {category.children?.length > 0 && (
               <nav className={styles.categoriesListWrapper}>
@@ -67,7 +64,6 @@ export const Category = ({ filters }) => {
 
             <Products filters={{ category_id: { eq: category.id } }} />
           </>
-        )}
       </div>
     </>
   )
