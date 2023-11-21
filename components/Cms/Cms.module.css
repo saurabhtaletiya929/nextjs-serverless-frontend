@@ -87,11 +87,6 @@
   }
 
   .detailsWrapper {
-    position: sticky;
-    top: 20px;
-    min-height: 90vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: relative;
   }
 }
