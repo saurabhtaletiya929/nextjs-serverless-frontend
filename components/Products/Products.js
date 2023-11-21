@@ -6,18 +6,25 @@ import { resolveImage } from "~/lib/resolve-image";
 import Link from "next/link";
 import Price from "~/components/Price";
 import Button from "~/components/Button";
-import { SideBar } from "./SideBar";
+import { SideBar } from "../SearchResults/SideBar";
+import { makeStyles } from "@mui/styles";
+import { Container } from "@mui/material";
+import theme from "../../components/Theme";
+
+const classes = makeStyles((theme) => ({
+  Button: {
+    color: theme.pallete.primary.light,
+  },
+}));
 
 export const Products = ({ search, filters }) => {
   const { loading, data, fetchMore } = useQuery(PRODUCTS_QUERY, {
     variables: { search, filters },
     notifyOnNetworkStatusChange: true,
   });
-
   const page = data?.products.page_info;
-
   const products = data?.products.items || [];
-  const aggregations = data?.aggregations || [];
+  // const aggregations = data?.products.aggregations || [];
 
   const productUrlSuffix = data?.storeConfig.product_url_suffix ?? "";
 
@@ -48,10 +55,7 @@ export const Products = ({ search, filters }) => {
   if (products.length === 0) return <div>🧐 No products found.</div>;
 
   return (
-    <div className="container">
-      <aside className="drawer">
-        <SideBar aggregations={aggregations}></SideBar>
-      </aside>
+    <Container maxWidth="xl">
       <main className="maincontainer">
         <section className={styles.products}>
           <div className={styles.productsList}>
@@ -95,6 +99,6 @@ export const Products = ({ search, filters }) => {
           )}
         </section>
       </main>
-    </div>
+    </Container>
   );
 };

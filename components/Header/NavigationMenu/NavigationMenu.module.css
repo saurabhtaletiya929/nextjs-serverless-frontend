@@ -2,9 +2,7 @@
 
 /* Style the navigation menu container */
 .navigationMenu {
-  background-color: #f3eeeea9;
   color: black;
-  padding: 0 250px;
 }
 
 /* Style the top-level list items */
@@ -43,7 +41,6 @@
   background-color: white;
   z-index: 1;
 }
-
 
 .categoryItem:hover .subMenu {
   display: block;
