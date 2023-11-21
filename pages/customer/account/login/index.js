@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
-import { Container, Typography, TextField, Button } from '@mui/material';
 import { Typography, TextField, Button, Grid } from '@mui/material';
 import { LOGIN_MUTATION } from '../../../../components/Customer/Login/CustomerLoginGraphql';
 import { GET_CUSTOMER_DATA } from "~/components/Customer/Login/CustomerDataGraphql";
