@@ -25,7 +25,7 @@ export const Home = () => {
 
   return (
     <div className={styles.home}>
-      <form className={styles.search} onSubmit={handleSearch}>
+      {/* <form className={styles.search} onSubmit={handleSearch}>
         <input
           className={styles.searchInput}
           type="search"
@@ -33,7 +33,7 @@ export const Home = () => {
           placeholder="Search..."
           onChange={(e) => setSearchQuery(e.currentTarget.value)}
         />
-      </form>
+      </form> */}
       <Cms identifier={cms_home_page} />
       <Products search={debouncedSearchQuery} />
     </div>
