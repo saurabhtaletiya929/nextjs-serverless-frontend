@@ -95,7 +95,7 @@ export const Header = (props, { children }) => {
                       ? resolveImage(
                         store.base_media_url + "logo/" + store.header_logo_src
                       )
-                      : "/static/logo.png"
+                      : "/static/logo.svg"
                   }
                   alt={store?.logo_alt ?? "Store"}
                   style={{ width: "75px", height: "75", margin: "0 250px" }}

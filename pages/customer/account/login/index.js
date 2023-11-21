@@ -1,25 +1,40 @@
 // components/Login.js
 
 import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { Container, Typography, TextField, Button } from '@mui/material';
 import { LOGIN_MUTATION } from '../../../../components/Customer/Login/CustomerLoginGraphql';
+import { GET_CUSTOMER_DATA } from "~/components/Customer/Login/CustomerDataGraphql";
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useAuth } from '~/providers/context/AuthContext';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
-  const [login] = useMutation(LOGIN_MUTATION);
+  const [loginMutation] = useMutation(LOGIN_MUTATION);
+  const { user, login, logout } = useAuth();
 
   const handleLogin = async () => {
     try {
-      const { data } = await login({
+      const { data } = await loginMutation({
         variables: { email, password },
       });
+      
       if(data?.generateCustomerToken?.token) {
-        router.push('/customer/account');
+        
+        const authToken = data.generateCustomerToken.token;
+        login(authToken);
+        if (typeof window !== 'undefined') {
+          // Perform localStorage action
+          const token = localStorage.getItem('token')
+          const { loading, error, data } = useQuery(GET_CUSTOMER_DATA);
+          //console.log("data", data)
+          token ? user() : login(authToken);
+          router.push('/customer/account');
+        }
+        
       } else {
         router.push('/customer/account/login');
       }
