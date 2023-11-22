@@ -17,12 +17,14 @@ export const FiltersDesktop = ({
   panel,
   expanded,
   onChange,
+  classes,
 }) => {
   const FilterOptions = filter?.options;
+  console.log(classes);
 
   return (
     <Accordion
-      className={styles.accordDesktop}
+      className={`${styles.accordDesktop} ${classes.summaryExpanded}`}
       expanded={expanded}
       onChange={onChange}
     >
