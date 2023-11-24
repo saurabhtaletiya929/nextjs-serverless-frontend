@@ -13,7 +13,7 @@ import {
 
 const MAX_FILTERS = 7;
 
-export const Filters = ({ aggregations, handleChangeEvent }) => {
+export const Filters = ({ aggregations, handleFilterClick }) => {
   const sortedFilters = aggregations.sort(function (a, b) {
     return a.attribute_code.localeCompare(b.attribute_code);
   });
@@ -45,7 +45,7 @@ export const Filters = ({ aggregations, handleChangeEvent }) => {
           <FiltersDesktop
             filter={filter}
             dropDownClass="accordDesktopDetail"
-            handleChangeEvent={handleChangeEvent}
+            handleFilterClick={handleFilterClick}
             panel={`panel_${filter.label}`}
             expanded={expanded === `panel_${filter.label}`}
             onChange={changeDropDownBehavior(`panel_${filter.label}`)}
@@ -68,7 +68,7 @@ export const Filters = ({ aggregations, handleChangeEvent }) => {
                 <FiltersDesktop
                   filter={filter}
                   dropDownClass="accordMobDetail"
-                  handleChangeEvent={handleChangeEvent}
+                  handleFilterClick={handleFilterClick}
                   panel={`panel_${filter.label}`}
                   expanded={expanded === `panel_${filter.label}`}
                   onChange={changeDropDownBehavior(`panel_${filter.label}`)}

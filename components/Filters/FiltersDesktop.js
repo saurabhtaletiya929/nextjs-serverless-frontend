@@ -13,7 +13,7 @@ import styles from "./Filters.module.css";
 export const FiltersDesktop = ({
   filter,
   dropDownClass,
-  handleChangeEvent,
+  handleFilterClick,
   panel,
   expanded,
   onChange,
@@ -38,9 +38,9 @@ export const FiltersDesktop = ({
           {FilterOptions.map((filteroption) => {
             return (
               <FilterItem
-                filterlabel={filter.attribute_code}
+                attributeCode={filter.attribute_code}
                 filteroption={filteroption}
-                handleChangeEvent={handleChangeEvent}
+                handleFilterClick={handleFilterClick}
               ></FilterItem>
             );
           })}

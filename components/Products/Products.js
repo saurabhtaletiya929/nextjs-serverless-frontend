@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useQuery } from "@apollo/client";
 import PRODUCTS_QUERY from "./Products.graphql";
 import styles from "./Products.module.css";
@@ -10,6 +10,8 @@ import { SideBar } from "../SearchResults/SideBar";
 import { makeStyles } from "@mui/styles";
 import { Container } from "@mui/material";
 import theme from "../../components/Theme";
+import { Aside } from "../Aside/Aside";
+import { useEffect } from "react";
 
 const classes = makeStyles((theme) => ({
   Button: {
@@ -17,14 +19,24 @@ const classes = makeStyles((theme) => ({
   },
 }));
 
-export const Products = ({ search, filters }) => {
+export const Products = ({ search, initialFilters }) => {
+  const [filters, setFilters] = useState(null);
+  const [productsData, setProductsData] = useState();
+
   const { loading, data, fetchMore } = useQuery(PRODUCTS_QUERY, {
-    variables: { search, filters },
+    variables: { search, filters: initialFilters },
     notifyOnNetworkStatusChange: true,
   });
-  const page = data?.products.page_info;
-  const products = data?.products.items || [];
-  // const aggregations = data?.products.aggregations || [];
+  
+  const page = data?.products?.page_info;
+  const products = data?.products?.items || [];
+  const aggregations = data?.products.aggregations || [];
+
+  useEffect(() => {
+    setProductsData(products)
+    setFilters(aggregations)
+  }, [products]);
+   
 
   const productUrlSuffix = data?.storeConfig.product_url_suffix ?? "";
 
@@ -49,17 +61,67 @@ export const Products = ({ search, filters }) => {
       },
     });
   }, [loading, page, fetchMore]);
+  
+  const handleFilterClick = useCallback((filterOption) => {
+    if (loading || !page || page.current_page === page.total_pages) return;
+    console.log("filterOption", filterOption)
+    console.log("filterOption", aggregations)
+    // Toggle the selected state of the filter option
+    const updatedFilters = filters.map(filter =>
+      filter.attribute_code === filterOption.attribute_code
+        ? {
+            ...filter,
+            options: filter.options.map(option =>
+              option.value == filterOption.value
+                ? { ...option, selected: !option.selected }
+                : option
+            )
+          }
+        : filter
+    );
+    console.log("filterOption", updatedFilters)
+    setFilters(updatedFilters);
+
+    // Create a new GraphQL query based on the updated filters
+    const selectedFilterOptions = updatedFilters.reduce((selected, filter) => {
+      const selectedOptions = filter.options.filter(option => option.selected);
+      if (selectedOptions.length > 0) {
+        selected[filter.attribute_code] = {
+          in: selectedOptions.map(option => option.value)
+        }
+      }
+      return selected;
+    }, {});
+    const selectedFilterOptionsFinal = {
+      ...selectedFilterOptions,
+      ...initialFilters
+    };
+    console.log("selectedFilterOptionsFinal", selectedFilterOptionsFinal)
+    
+    fetchMore({
+      variables: {
+        filters: selectedFilterOptionsFinal
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev;
+        return fetchMoreResult;
+      },
+    });
+  }, [loading, filters, fetchMore]);
+
 
   if (loading && !data) return <div>⌚️ Loading...</div>;
 
   if (products.length === 0) return <div>🧐 No products found.</div>;
 
   return (
-    <Container maxWidth="xl">
+    <>
+    <Aside aggregations={aggregations} handleFilterClick={handleFilterClick} ></Aside>
+      <Container maxWidth="xl">
       <main className="maincontainer">
         <section className={styles.products}>
           <div className={styles.productsList}>
-            {products.map((product) => (
+            {productsData.map((product) => (
               <Link
                 key={product.id}
                 href={{
@@ -100,5 +162,7 @@ export const Products = ({ search, filters }) => {
         </section>
       </main>
     </Container>
+    </>
+    
   );
 };

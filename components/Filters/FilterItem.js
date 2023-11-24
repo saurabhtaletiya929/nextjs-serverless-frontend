@@ -1,17 +1,15 @@
 import { FormControlLabel, Checkbox } from "@mui/material";
 
 export const FilterItem = ({
+  attributeCode,
   filteroption,
-  filterlabel,
-  handleChangeEvent,
+  handleFilterClick,
 }) => {
   return (
     <FormControlLabel
       control={<Checkbox name={filteroption.value}></Checkbox>}
       label={filteroption.label}
-      onChange={(e) => {
-        handleChangeEvent(filterlabel, e.target.name);
-      }}
+      onChange={() => handleFilterClick({ ...filteroption, attribute_code: attributeCode })}
     />
   );
 };

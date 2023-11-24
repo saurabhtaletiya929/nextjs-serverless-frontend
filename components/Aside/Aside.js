@@ -4,19 +4,12 @@ import FILTER_QUERY from "../Products/Products.graphql";
 import { Filters } from "../Filters/Filters";
 import { Container } from "@mui/material";
 
-export const Aside = ({ filters, handleChangeEvent }) => {
-  const { loading, data } = useQuery(FILTER_QUERY, {
-    variables: { filters },
-    notifyOnNetworkStatusChange: true,
-  });
-
-  const aggregations = data?.products.aggregations || [];
-
+export const Aside = ({ aggregations, handleFilterClick }) => {
   return (
     <Container maxWidth="xl">
       <Filters
         aggregations={aggregations}
-        handleChangeEvent={handleChangeEvent}
+        handleFilterClick={handleFilterClick}
       ></Filters>
     </Container>
   );
