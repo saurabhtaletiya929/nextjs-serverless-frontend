@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import styles from "./Cms.module.css";
 import { useQuery } from "@apollo/client";
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import CMS_QUERY from "./Cms.graphql";
 import Head from "next/head";
 
@@ -17,7 +17,7 @@ export const Cms = ({ identifier }) => {
   };
 
   return (
-    <Container maxWidth="xl" className={`cms_${cms.identifier}`}>
+    <Box className={`cms_${cms.identifier}`}>
       <Head>
         <title>{cms.title}</title>
       </Head>
@@ -29,6 +29,6 @@ export const Cms = ({ identifier }) => {
       <div className={styles.detailsWrapper}>
         <HTMLContent html={cms.content} />
       </div>
-    </Container>
+    </Box>
   );
 };

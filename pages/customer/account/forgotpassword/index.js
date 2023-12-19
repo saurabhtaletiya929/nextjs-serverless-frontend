@@ -1,25 +1,35 @@
-import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { Typography, TextField, Button} from '@mui/material';
-import { FORGOTPASSWORD_MUTATION } from '~/components/Customer/ForgotPassword/CustomerForgotPasswordGraphql';
+import React, { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { Typography, TextField, Button, Grid, Box } from "@mui/material";
+import { FORGOTPASSWORD_MUTATION } from "~/components/Customer/ForgotPassword/CustomerForgotPasswordGraphql";
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
   const [SendPasswordResetEmail] = useMutation(FORGOTPASSWORD_MUTATION);
 
   const handleSubmit = async () => {
     try {
-      const { data } = await SendPasswordResetEmail({
+      const { loading, data } = await SendPasswordResetEmail({
         variables: { email },
       });
-    } catch (error) {
-    }
+      if (loading) {
+        returb(<div>Loading</div>);
+      }
+      if (error) {
+        returb(<div>Error</div>);
+      }
+      console.log(data);
+    } catch (error) {}
   };
   return (
-    <div style={{ margin: "20px 600px" }}>
-      <Typography variant='h5' style={{ margin: "30px 0 50px 0"}}>Forgot Your Password?</Typography>
-      <Typography>Please enter your email address below to receive a password reset link.</Typography>
+    <Box sx={{ maxWidth: "500px" }}>
+      <Typography variant="h5" style={{ margin: "30px 0 50px 0" }}>
+        Forgot Your Password?
+      </Typography>
+      <Typography>
+        Please enter your email address below to receive a password reset link.
+      </Typography>
 
       <form>
         <TextField
@@ -31,15 +41,16 @@ const ForgotPassword = () => {
           required
           style={{ margin: "20px 0" }}
         />
-        <Button 
-        variant="contained" 
-        color="primary"
-        onClick={handleSubmit}
-        style={{margin: "30px 0"}}>
-        Send Email
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          style={{ margin: "30px 0" }}
+        >
+          Send Email
         </Button>
       </form>
-    </div>
+    </Box>
   );
 };
 

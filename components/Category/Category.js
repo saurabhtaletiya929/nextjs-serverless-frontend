@@ -5,7 +5,7 @@ import CATEGORY_QUERY from "./Category.graphql";
 import Products from "~/components/Products";
 import Link from "next/link";
 import Head from "next/head";
-import { Container } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import { Aside } from "../Aside/Aside";
 // import { useRouter } from "next/router";
 
@@ -28,7 +28,7 @@ export const Category = ({ filters }) => {
   const [showfilter, setShowfilters] = useState({});
 
   const ObjectConverterComponent = (inputObject) => {
-    const convertToObject = (inputObject) => {
+    if (inputObject) {
       let convertedObject = {};
 
       Object.keys(inputObject).forEach((key) => {
@@ -38,13 +38,7 @@ export const Category = ({ filters }) => {
           convertedObject[key] = { eq: value };
         });
       });
-
-      // Use the convertedObject as needed
-      setShowfilters(convertedObject);
-    };
-
-    if (inputObject) {
-      convertToObject(inputObject);
+      return convertedObject;
     }
   };
   // const updateQueryParams = () => {
@@ -64,25 +58,29 @@ export const Category = ({ filters }) => {
   // };
 
   const handleChangeEvent = (filterType, option) => {
-    const updatedFilters = { ...dynamicFilters };
+    setDynamicFilters((prevFilters) => {
+      const newFilters = { ...prevFilters };
 
-    if (!updatedFilters[filterType]) {
-      updatedFilters[filterType] = [];
-    }
+      // If the filter category doesn't exist, initialize it as an array
+      if (!newFilters[filterType]) {
+        newFilters[filterType] = [];
+      }
 
-    const index = updatedFilters[filterType].indexOf(option);
+      // Check if the option is already selected, if yes, remove it; otherwise, add it
+      if (newFilters[filterType].includes(option)) {
+        newFilters[filterType] = newFilters[filterType].filter(
+          (item) => item !== option
+        );
+      } else {
+        newFilters[filterType] = [...newFilters[filterType], option];
+      }
 
-    if (index === -1) {
-      updatedFilters[filterType].push(option);
-    } else {
-      updatedFilters[filterType].splice(index, 1);
-    }
-
-    setDynamicFilters(updatedFilters);
+      return newFilters;
+    });
   };
 
   useEffect(() => {
-    ObjectConverterComponent(dynamicFilters);
+    setShowfilters(ObjectConverterComponent(dynamicFilters));
   }, [dynamicFilters]);
 
   if (error) {
@@ -94,62 +92,42 @@ export const Category = ({ filters }) => {
 
   return (
     <>
-      <Container maxWidth="false">
-        <Container maxWidth="xl" style={{ padding: "20px" }}>
-          <Head>
-            <title>{category?.name}</title>
-          </Head>
+      {/* <Head>
+        <title>{category?.name}</title>
+      </Head> */}
 
-          <div className={styles.category}>
-            <header className={styles.header}>
-              {backUrl && (
-                <Link key={backUrl} href={backUrl}>
-                  <span className={styles.backLink}>⬅</span>
-                </Link>
-              )}
-              <h2>{category.name}</h2>
-            </header>
-            <>
-              {category.children?.length > 0 && (
-                <nav className={styles.categoriesListWrapper}>
-                  <ul className={styles.categoriesList}>
-                    {category.children.map((category) => (
-                      <li key={category.id}>
-                        <Link
-                          href={{
-                            pathname: `/${
-                              category.url_key + categoryUrlSuffix
-                            }`,
-                            query: { type: "CATEGORY" },
-                          }}
-                          as={`/${category.url_path + categoryUrlSuffix}`}
-                        >
-                          {category.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              )}
-            </>
-          </div>
-        </Container>
-      </Container>
-      <Aside
-        filters={{
-          category_id: { eq: category.id },
-        }}
-        handleChangeEvent={handleChangeEvent}
-      ></Aside>
-
-      {showfilter && <Products filters={showfilter} />}
-      {/* <hr></hr>
-      <Products
-        filters={{
-          category_id: { eq: category.id },
-          color: { eq: "354" },
-        }}
-      /> */}
+      <div className={styles.category}>
+        <Box className={styles.header}>
+          {backUrl && (
+            <Link key={backUrl} href={backUrl}>
+              <span className={styles.backLink}>⬅</span>
+            </Link>
+          )}
+          <Typography variant="h2">{category.name}</Typography>
+        </Box>
+        <>
+          {category.children?.length > 0 && (
+            <nav className={styles.categoriesListWrapper}>
+              <ul className={styles.categoriesList}>
+                {category.children.map((category) => (
+                  <li key={category.id}>
+                    <Link
+                      href={{
+                        pathname: `/${category.url_key + categoryUrlSuffix}`,
+                        query: { type: "CATEGORY" },
+                      }}
+                      as={`/${category.url_path + categoryUrlSuffix}`}
+                    >
+                      {category.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
+        </>
+      </div>
+      <Products filters={showfilter} handleChangeEvent={handleChangeEvent} />
     </>
   );
 };

@@ -6,12 +6,15 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
+  Button,
   FormGroup,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { FilterMobile } from "./FilterMobile";
 
 const filterClasses = makeStyles({
   summaryExpanded: {
@@ -31,7 +34,6 @@ const filterClasses = makeStyles({
       },
     },
     "& .MuiAccordionSummary-content": { margin: "12px 0 !important" },
-    // "& .Mui-expanded": { margin: "12px 0 !important" },
   },
   moreFilters: {
     marginTop: "0px !important",
@@ -74,14 +76,18 @@ const filterClasses = makeStyles({
 export const Filters = ({ aggregations, handleChangeEvent }) => {
   const theme = useTheme();
   const classes = filterClasses();
-  const isMobileView = useMediaQuery(theme.breakpoints.down("1200"));
+
+  const isTabletView = useMediaQuery(
+    theme.breakpoints.up("768") && theme.breakpoints.down("1200")
+  );
+  const isMobileView = useMediaQuery(theme.breakpoints.down("768"));
 
   const sortedFilters = aggregations.sort(function (a, b) {
     return a.attribute_code.localeCompare(b.attribute_code);
   });
 
   const { visibleFilters, moreFilters } = useMemo(() => {
-    const noOfFilters = isMobileView ? 5 : 7;
+    const noOfFilters = isTabletView ? 5 : 7;
     return {
       visibleFilters:
         sortedFilters.length <= noOfFilters
@@ -92,7 +98,7 @@ export const Filters = ({ aggregations, handleChangeEvent }) => {
           ? sortedFilters.slice(noOfFilters - 1)
           : [],
     };
-  }, [isMobileView, sortedFilters]);
+  }, [isTabletView, sortedFilters]);
 
   const [expanded, setExpended] = useState(null);
   const changeDropDownBehavior = (panel) => (event, isExpanded) => {
@@ -100,38 +106,20 @@ export const Filters = ({ aggregations, handleChangeEvent }) => {
   };
 
   return (
-    <div className={styles.filtersContainer}>
-      {visibleFilters.map((filter, index) => {
-        return (
-          <FiltersDesktop
-            filter={filter}
-            dropDownClass="accordDesktopDetail"
+    <>
+      <Box>
+        {isMobileView ? (
+          <FilterMobile
+            aggregations={aggregations}
             handleChangeEvent={handleChangeEvent}
-            panel={`panel_${filter.label}`}
-            expanded={expanded === `panel_${filter.label}`}
-            onChange={changeDropDownBehavior(`panel_${filter.label}`)}
-            classes={classes}
-          ></FiltersDesktop>
-        );
-      })}
-
-      <Accordion
-        className={`${classes.moreFilters} ${classes?.summaryExpanded}`}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreOutlined />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography>More Filters</Typography>
-        </AccordionSummary>
-        <AccordionDetails className={styles.accordDesktopDetail}>
-          <FormGroup>
-            {moreFilters.map((filter, index) => {
+          ></FilterMobile>
+        ) : (
+          <div className={styles.filtersContainer}>
+            {visibleFilters.map((filter, index) => {
               return (
                 <FiltersDesktop
                   filter={filter}
-                  dropDownClass="accordMobDetail"
+                  dropDownClass="accordDesktopDetail"
                   handleChangeEvent={handleChangeEvent}
                   panel={`panel_${filter.label}`}
                   expanded={expanded === `panel_${filter.label}`}
@@ -140,9 +128,40 @@ export const Filters = ({ aggregations, handleChangeEvent }) => {
                 ></FiltersDesktop>
               );
             })}
-          </FormGroup>
-        </AccordionDetails>
-      </Accordion>
-    </div>
+
+            <Accordion
+              className={`${classes.moreFilters} ${classes?.summaryExpanded}`}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreOutlined />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography>More Filters</Typography>
+              </AccordionSummary>
+              <AccordionDetails className={styles.accordDesktopDetail}>
+                <FormGroup>
+                  {moreFilters.map((filter, index) => {
+                    return (
+                      <FiltersDesktop
+                        filter={filter}
+                        dropDownClass="accordMobDetail"
+                        handleChangeEvent={handleChangeEvent}
+                        panel={`panel_${filter.label}`}
+                        expanded={expanded === `panel_${filter.label}`}
+                        onChange={changeDropDownBehavior(
+                          `panel_${filter.label}`
+                        )}
+                        classes={classes}
+                      ></FiltersDesktop>
+                    );
+                  })}
+                </FormGroup>
+              </AccordionDetails>
+            </Accordion>
+          </div>
+        )}
+      </Box>
+    </>
   );
 };

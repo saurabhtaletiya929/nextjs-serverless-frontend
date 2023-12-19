@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const GET_CUSTOMER_DATA = gql`
   query GetCustomerData {
@@ -21,5 +21,14 @@ export const GET_CUSTOMER_DATA = gql`
         telephone
       }
     }
-  }  
+    customerOrders {
+      items {
+        order_number
+        id
+        created_at
+        grand_total
+        status
+      }
+    }
+  }
 `;

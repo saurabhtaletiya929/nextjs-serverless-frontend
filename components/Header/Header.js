@@ -1,103 +1,41 @@
 import * as React from "react";
 import { useState, useCallback } from "react";
-import { useDebounce } from "use-debounce";
 import Link from "next/link";
 import { resolveImage } from "~/lib/resolve-image";
 import NavigationMenu from "./NavigationMenu";
-import MiniSearch from "../SearchResults/MiniSearch";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
-import { Container, AppBar, Toolbar, Typography } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { styled, alpha } from "@mui/material/styles";
+
+import {
+  Container,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import Box from "@mui/material/Box";
-import InputBase from "@mui/material/InputBase";
-import SearchIcon from "@mui/icons-material/Search";
-import Button from "@mui/material/Button";
+import MenuIcon from "@mui/icons-material/Menu";
+
+// import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useRouter } from "next/navigation";
 import { useRef, useEffect } from "react";
-
-const classes = makeStyles((theme) => ({
-  header: {
-    backgroundColor: theme.palette.primary.main,
-  },
-  logo: {
-    marginRight: theme.spacing(2),
-  },
-}));
-
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      width: "12ch",
-      "&:focus": {
-        width: "20ch",
-      },
-    },
-  },
-}));
+import { CustomerDropDown } from "~/components/Customer/CustomerDropDown";
+import { useAuth } from "~/providers/context/AuthContext";
+import { SearchBox } from "../Search/SearchBox";
 
 export const Header = (props, { children }) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery] = useDebounce(searchQuery, 500);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const dropdown = useRef(null);
-  const router = useRouter();
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
+
+  const { userData } = useAuth();
+  const theme = useTheme();
+  const isMobileView = useMediaQuery(theme.breakpoints.down("900"));
 
   const store = props?.storeConfig;
-  const handleClick = () => {
-    setSearchQuery("");
-  };
 
-  const goToSearchResults = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    router.push(`/catalogsearch/result?q=${debouncedSearchQuery}`);
-    setSearchQuery("");
+  const toglleMenu = () => {
+    setIsOpenMenu(!isOpenMenu);
   };
-
-  useEffect(() => {
-    if (!showDropdown) return;
-    function handleClick(event) {
-      if (dropdown.current && !dropdown.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
-    }
-    window.addEventListener("click", handleClick);
-    // clean up
-    return () => window.removeEventListener("click", handleClick);
-  }, [showDropdown]);
 
   // const handleSearch = useCallback(
   //   (e) => {
@@ -113,23 +51,17 @@ export const Header = (props, { children }) => {
       <Container maxWidth="false" style={{ backgroundColor: "#002A3A" }}>
         <Container maxWidth="xl">
           <Box sx={{ flexGrow: 1 }}>
-            <Toolbar>
+            <Toolbar disableGutters>
               <Typography
                 style={{ color: "white" }}
                 variant="h6"
                 sx={{ flexGrow: 1 }}
               >
-                Default welcome msg!
+                Welcome{" "}
+                <strong>
+                  {userData?.customer?.firstname} {userData?.customer?.lastname}
+                </strong>
               </Typography>
-              <Link
-                href={{
-                  pathname: "/customer/account/login",
-                  query: { type: "CMS" },
-                }}
-                as={"/customer/account/login"}
-              >
-                <LockOpenIcon fontSize="medium" style={{ color: "white" }} />
-              </Link>
             </Toolbar>
           </Box>
         </Container>
@@ -137,9 +69,9 @@ export const Header = (props, { children }) => {
 
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static" color="transparent">
-          <Container maxWidth="xl" sx={{ pt: 1 }}>
-            <Toolbar>
-              <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          <Container maxWidth="xl" sx={{ p: 2 }}>
+            <Toolbar disableGutters>
+              <Box sx={{ flexGrow: 1 }}>
                 <Link href="/">
                   <img
                     src={
@@ -152,54 +84,57 @@ export const Header = (props, { children }) => {
                         : "/static/logo.svg"
                     }
                     alt={store?.logo_alt ?? "Store"}
-                    style={{ width: "75px", height: "75px" }}
                   />
                 </Link>
-              </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <form onSubmit={(e) => goToSearchResults(e)}>
-                  <Search
-                    sx={{ border: 1, borderColor: "grey.500" }}
-                    ref={dropdown}
-                  >
-                    <SearchIconWrapper>
-                      <SearchIcon />
-                    </SearchIconWrapper>
-                    <StyledInputBase
-                      placeholder="Search…"
-                      inputProps={{ "aria-label": "search" }}
-                      onChange={(e) => {
-                        setSearchQuery(e.target.value);
-                        setShowDropdown(true);
-                      }}
-                      value={searchQuery}
-                    />
-                    <MiniSearch
-                      search={debouncedSearchQuery}
-                      handleClick={handleClick}
-                      showDropdown={showDropdown}
-                    ></MiniSearch>
-                  </Search>
-                </form>
-                <Link href="/checkout/cart">
-                  <ShoppingCartIcon color="primary" />
-                </Link>
               </Box>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                <Box
+                  sx={{
+                    display: { xs: "none", md: "flex", marginRight: "20px" },
+                  }}
+                >
+                  <SearchBox />
+                </Box>
 
-              {/* <Button
-              variant="contained"
-              color="primary"
-              startIcon={<ShoppingCartIcon />}
-            >
-              Cart
-            </Button> */}
+                <CustomerDropDown></CustomerDropDown>
+
+                <Link href="/checkout/cart">
+                  <ShoppingCartIcon
+                    sx={{ fontSize: "29px" }}
+                    color="primary"
+                  ></ShoppingCartIcon>
+                </Link>
+
+                {isMobileView && (
+                  <IconButton onClick={toglleMenu}>
+                    <MenuIcon />
+                  </IconButton>
+                )}
+              </Box>
             </Toolbar>
           </Container>
+
+          {isMobileView && (
+            <Container
+              sx={{
+                position: "relative",
+                padding: "0 10px 15px",
+              }}
+            >
+              <SearchBox />
+            </Container>
+          )}
         </AppBar>
       </Box>
+
       <Container maxWidth="false" style={{ backgroundColor: "#f3eeeea9" }}>
-        <Container maxWidth="xl">
-          <NavigationMenu storeConfig={store} />
+        <Container maxWidth="xl" disableGutters>
+          <NavigationMenu
+            storeConfig={store}
+            isMobileView={isMobileView}
+            isOpenMenu={isOpenMenu}
+            toglleMenu={toglleMenu}
+          />
         </Container>
       </Container>
     </>
