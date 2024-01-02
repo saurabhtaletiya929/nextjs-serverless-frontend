@@ -1,0 +1,29 @@
+.ratingStars {
+    display: inline-block;
+    margin: 10px 0;
+  }
+  
+  .filledStar::before {
+    content: '\2605'; 
+    color: gold; 
+    font-size: 1.9em;
+  }
+  
+  .emptyStar::before {
+    content: '\2606';
+    color: gray; 
+    font-size: 1.9em;
+  }
+
+  .label{
+    display: inline-block;
+    font-weight: bold;
+    margin: 15px 0;
+  }
+
+  .label::after{
+    content: '*';
+    color: #e02b27;
+    font-size: 1.2rem;
+    margin: 0 0 0 5px;
+  }

@@ -1,11 +1,63 @@
 #import "~/components/Price/_price_range.graphql"
 
 query ProductQuery($filters: ProductAttributeFilterInput!) {
+  storeConfig {
+    id
+    product_url_suffix 
+  }
   products(filter: $filters) {
+    aggregations {
+      label
+      attribute_code
+      count
+      options {
+        count
+        label
+        value
+      }
+      position
+    }
     items {
       id
       sku
       name
+
+      reviews{
+        items{
+          summary
+          text
+          nickname
+          created_at
+          average_rating
+          ratings_breakdown{
+            name
+            value
+          }
+        }
+      }
+
+      related_products {
+        uid
+        name
+        url_key
+        media_gallery {
+        id: url
+        label
+        url
+        type: __typename
+      }
+        thumbnail {
+        id: url
+        url
+        label
+      }
+        image {
+          disabled
+          label
+          position
+          url
+        }
+      }
 
       description {
         html

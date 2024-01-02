@@ -13,6 +13,9 @@
     "@apollo/client": "^3.8.6",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/icons-material": "^5.14.16",
     "@mui/material": "^5.14.16",
     "@mui/styles": "^5.14.16",
@@ -22,7 +25,9 @@
     "nextjs-progressbar": "^0.0.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-slick": "^0.29.0",
     "reset-css": "^5.0.1",
+    "slick-carousel": "^1.8.1",
     "use-debounce": "^5.0.1"
   },
   "devDependencies": {
