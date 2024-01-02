@@ -20,8 +20,8 @@ export const AuthProvider = ({ children }) => {
 
   const user = (userData) => {
     if (token && !userData) {
-      if (data?.customer) {
-        setUserData(data.customer);
+      if (userData?.customer) {
+        setUserData(userData.customer);
       }
     }
   };

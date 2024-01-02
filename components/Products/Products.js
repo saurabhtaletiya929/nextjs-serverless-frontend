@@ -21,6 +21,7 @@ const classes = makeStyles((theme) => ({
 
 export const Products = ({ search, initialFilters }) => {
   const [filters, setFilters] = useState(null);
+  const [avaiableFilters, setAvaiableFilters] = useState(null);
   const [productsData, setProductsData] = useState();
 
   const { loading, data, fetchMore } = useQuery(PRODUCTS_QUERY, {
@@ -33,8 +34,11 @@ export const Products = ({ search, initialFilters }) => {
   const aggregations = data?.products.aggregations || [];
 
   useEffect(() => {
-    setProductsData(products)
     setFilters(aggregations)
+  }, [aggregations]);
+
+  useEffect(() => {
+    setProductsData(products)
   }, [products]);
    
 
@@ -42,7 +46,7 @@ export const Products = ({ search, initialFilters }) => {
 
   const handleFetchMore = useCallback(() => {
     if (loading || !page || page.current_page === page.total_pages) return;
-
+    
     fetchMore({
       variables: {
         currentPage: page.current_page + 1, // next page
@@ -63,51 +67,74 @@ export const Products = ({ search, initialFilters }) => {
   }, [loading, page, fetchMore]);
   
   const handleFilterClick = useCallback((filterOption) => {
-    if (loading || !page || page.current_page === page.total_pages) return;
-    console.log("filterOption", filterOption)
-    console.log("filterOption", aggregations)
-    // Toggle the selected state of the filter option
-    const updatedFilters = filters.map(filter =>
-      filter.attribute_code === filterOption.attribute_code
-        ? {
-            ...filter,
-            options: filter.options.map(option =>
-              option.value == filterOption.value
-                ? { ...option, selected: !option.selected }
-                : option
-            )
+    if (loading ) return;
+    console.log("aggregations", aggregations)
+    if(avaiableFilters) {
+      const updatedAvaiableFilters = avaiableFilters.map(filter =>
+        filter.attribute_code === filterOption.attribute_code
+          ? {
+              attribute_code: filterOption?.attribute_code,
+              options: [...filter.options, ...[filterOption]]
+            }
+          : {
+            attribute_code: filterOption?.attribute_code,
+            options: [filterOption],
           }
-        : filter
-    );
-    console.log("filterOption", updatedFilters)
-    setFilters(updatedFilters);
-
-    // Create a new GraphQL query based on the updated filters
-    const selectedFilterOptions = updatedFilters.reduce((selected, filter) => {
-      const selectedOptions = filter.options.filter(option => option.selected);
-      if (selectedOptions.length > 0) {
-        selected[filter.attribute_code] = {
-          in: selectedOptions.map(option => option.value)
-        }
+      );
+      console.log("updatedAvaiable", updatedAvaiableFilters)
+      setAvaiableFilters([updatedAvaiableFilters]);
+    } else {
+      const updatedAvaiableFilters = {
+        attribute_code: filterOption?.attribute_code,
+        options: [filterOption],
       }
-      return selected;
-    }, {});
-    const selectedFilterOptionsFinal = {
-      ...selectedFilterOptions,
-      ...initialFilters
-    };
-    console.log("selectedFilterOptionsFinal", selectedFilterOptionsFinal)
+      setAvaiableFilters([updatedAvaiableFilters])
+    }
+    console.log("updatedAvaiable", avaiableFilters)
+    // Toggle the selected state of the filter option
     
-    fetchMore({
-      variables: {
-        filters: selectedFilterOptionsFinal
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev;
-        return fetchMoreResult;
-      },
-    });
-  }, [loading, filters, fetchMore]);
+    // const updatedFilters = filters.map(filter =>
+    //   filter.attribute_code === filterOption.attribute_code
+    //     ? {
+    //         ...filter,
+    //         options: filter.options.map(option =>
+    //           option.value == filterOption.value
+    //             ? { ...option, selected: !option.selected }
+    //             : option
+    //         )
+    //       }
+    //     : filter
+    // );
+    // console.log("filterOption", updatedFilters)
+    // setFilters(updatedFilters);
+
+    // // Create a new GraphQL query based on the updated filters
+    // const selectedFilterOptions = updatedFilters.reduce((selected, filter) => {
+    //   const selectedOptions = filter.options.filter(option => option.selected);
+    //   if (selectedOptions.length > 0) {
+    //     selected[filter.attribute_code] = {
+    //       in: selectedOptions.map(option => option.value)
+    //     }
+    //   }
+    //   return selected;
+    // }, {});
+    
+    // const selectedFilterOptionsFinal = {
+    //   ...selectedFilterOptions,
+    //   ...initialFilters
+    // };
+    // console.log("selectedFilterOptionsFinal", selectedFilterOptionsFinal)
+    
+    // fetchMore({
+    //   variables: {
+    //     filters: selectedFilterOptionsFinal
+    //   },
+    //   updateQuery: (prev, { fetchMoreResult }) => {
+    //     if (!fetchMoreResult) return prev;
+    //     return fetchMoreResult;
+    //   },
+    // });
+  }, [loading, filters, fetchMore, avaiableFilters]);
 
 
   if (loading && !data) return <div>⌚️ Loading...</div>;

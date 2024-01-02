@@ -9,7 +9,7 @@ export const FilterItem = ({
     <FormControlLabel
       control={<Checkbox name={filteroption.value}></Checkbox>}
       label={filteroption.label}
-      onChange={() => handleFilterClick({ ...filteroption, attribute_code: attributeCode })}
+      onClick={() => handleFilterClick({ ...filteroption, attribute_code: attributeCode })}
     />
   );
 };
