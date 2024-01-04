@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -10,18 +11,21 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useRouter } from "next/router";
 import { Aside } from "~/components/Aside/Aside";
 import { useAuth } from "~/providers/context/AuthContext";
 import { useMutation } from "@apollo/client";
-import { UPDATE_MUTATION } from "~/components/Customer/Update/CustomerUpdateGraphql";
+import { UPDATECUSTOMERNAME_MUTATION } from "~/components/Customer/Update/CustomerUpdateGraphql";
 
 const EditAccount = () => {
+  const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("ansar.abbas@systemsltd.com");
   const { setToken, userData, user } = useAuth();
   const [targetValues, setTargetValues] = useState([]);
-  const [UpdateCustomer] = useMutation(UPDATE_MUTATION);
+  const [UpdateCustomer] = useMutation(UPDATECUSTOMERNAME_MUTATION);
+  const [currentStatus, setCurrentStatus] = useState({ status: "error" });
 
   useEffect(() => {
     const resultedToken = localStorage.getItem("token");
@@ -29,7 +33,7 @@ const EditAccount = () => {
     user();
     setFirstName(userData?.customer?.firstname);
     setLastName(userData?.customer?.lastname);
-  });
+  }, []);
 
   const ToggleChangeInfo = (e) => {
     const target = e.target.name;
@@ -44,13 +48,24 @@ const EditAccount = () => {
     }
   };
 
-  const updateAccount = () => {
+  const updateAccount = async () => {
     try {
-      const { loading, error, data } = UpdateCustomer({
-        variables: { firstName, email },
+      const { loading, error, data } = await UpdateCustomer({
+        variables: { firstName, lastName, email },
       });
-      console.log(data);
-    } catch (error) {}
+      if (loading && !data) {
+        setCurrentStatus({ status: "loading" });
+      }
+      if (data) {
+        setCurrentStatus({ status: "success" });
+        user();
+        // setTimeout(() => {
+        //   router.push("/customer/account/");
+        // }, 1000);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -60,6 +75,13 @@ const EditAccount = () => {
       </Grid>
       {userData && (
         <Grid item xs={12} sm={9}>
+          {currentStatus.status == "success" ? (
+            <Alert severity="success">Data updated successfully</Alert>
+          ) : null}
+
+          {currentStatus.status == "loading" ? (
+            <Alert severity="info">Updating Data</Alert>
+          ) : null}
           <Typography variant="h5" mb={2}>
             Edit Account Information
           </Typography>
