@@ -1,28 +1,22 @@
 /* NavigationMenu.css */
 
-/* Style the navigation menu container */
 .navigationMenu {
   color: black;
+  padding: 0;
 }
-
-/* Style the top-level list items */
-.navigationMenu ul {
+.navigationMenu button{
+  padding: 20px 10px;
+}
+.navigationMenu>ul {
   list-style: none;
   padding: 0;
 }
 
-/* Style the list items */
-.navigationMenu li {
-  margin: 5px 0;
-}
-
-/* Style the links */
 .navigationMenu a {
   color: black;
   text-decoration: none;
+  display: block;
 }
-
-/* Style the nested lists */
 .navigationMenu ul ul {
   padding-left: 20px;
 }
@@ -37,11 +31,45 @@
   position: absolute;
   top: 100%;
   left: 0;
-  padding: 10px;
+  padding: 15px 0;
   background-color: white;
   z-index: 1;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.19);
+  min-width: 200px;
 }
-
+.subMenu li{
+  display: block;
+}
 .categoryItem:hover .subMenu {
   display: block;
+}
+
+
+/**Hamburger Menu**/
+.mobileNav{
+  padding: 20px 0 0;
+  border-bottom: 1px silver solid;
+}
+.mobileNav ul{
+  padding: 0;
+}
+.mobileNav>li{
+  border-top: 1px silver solid;
+  position: relative;
+ 
+}
+.mobileNav>li>a{
+  font-weight: 800;
+  padding: 12px 16px;
+}
+.mobileNav>li:first-child{
+  border: none;
+}
+.mobileNav li a{
+  text-decoration: none;
+  color:  #000;
+  display: block;
+}
+.mobileNav li .Mui-expanded {
+  margin: 12px 0;
 }

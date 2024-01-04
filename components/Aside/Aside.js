@@ -1,23 +1,15 @@
-import React, { useCallback } from "react";
-import { useQuery } from "@apollo/client";
-import FILTER_QUERY from "../Products/Products.graphql";
-import { Filters } from "../Filters/Filters";
-import { Container } from "@mui/material";
+import React from "react";
 
-export const Aside = ({ filters, handleChangeEvent }) => {
-  const { loading, data } = useQuery(FILTER_QUERY, {
-    variables: { filters },
-    notifyOnNetworkStatusChange: true,
-  });
+import {
+  Box,
+  ListItemText,
+  MenuItem,
+  MenuList,
+  Paper,
+  Typography,
+} from "@mui/material";
+import { CustomerMenu } from "../Customer/CustomerMenu";
 
-  const aggregations = data?.products.aggregations || [];
-
-  return (
-    <Container maxWidth="xl">
-      <Filters
-        aggregations={aggregations}
-        handleChangeEvent={handleChangeEvent}
-      ></Filters>
-    </Container>
-  );
+export const Aside = ({}) => {
+  return <CustomerMenu></CustomerMenu>;
 };

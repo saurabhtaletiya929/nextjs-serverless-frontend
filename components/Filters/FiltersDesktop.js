@@ -20,7 +20,6 @@ export const FiltersDesktop = ({
   classes,
 }) => {
   const FilterOptions = filter?.options;
-  console.log(classes);
 
   return (
     <Accordion

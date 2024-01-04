@@ -6,6 +6,7 @@ import NextNprogress from "nextjs-progressbar";
 import Head from "next/head";
 import { Header } from "../Header/Header";
 import { Footer } from "../Footer/Footer";
+import { Container } from "@mui/material";
 
 export const App = ({ children }) => {
   const { data } = useQuery(APP_QUERY);
@@ -14,21 +15,17 @@ export const App = ({ children }) => {
 
   return (
     <>
-      <Head>
-        <title>{store?.default_title}</title>
-      </Head>
-
-      <div>
-        <NextNprogress
-          startPosition={0.4}
-          stopDelayMs={200}
-          height={6}
-          options={{ showSpinner: false, easing: "ease" }}
-        />
-        <Header storeConfig={store} />
+      <NextNprogress
+        startPosition={0.4}
+        stopDelayMs={200}
+        height={6}
+        options={{ showSpinner: false, easing: "ease" }}
+      />
+      <Header storeConfig={store} />
+      <Container maxWidth="xl" sx={{ minHeight: "500px", padding: "40px 0" }}>
         {children}
-        <Footer />
-      </div>
+      </Container>
+      <Footer />
     </>
   );
 };
