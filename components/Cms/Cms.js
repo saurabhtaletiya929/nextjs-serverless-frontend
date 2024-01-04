@@ -11,7 +11,6 @@ export const Cms = ({ identifier }) => {
   const cms = data?.cmsPage;
 
   if (loading && !data) return <div>⌚️ Loading...</div>;
-  console.log(cms);
 
   const HTMLContent = ({ html }) => {
     return <div dangerouslySetInnerHTML={{ __html: html }} />;

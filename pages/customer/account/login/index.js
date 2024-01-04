@@ -23,18 +23,9 @@ const LoginPage = () => {
       });
       
       if(data?.generateCustomerToken?.token) {
-        
         const authToken = data.generateCustomerToken.token;
         login(authToken);
-        if (typeof window !== 'undefined') {
-          // Perform localStorage action
-          const token = localStorage.getItem('token')
-          const { loading, error, data } = useQuery(GET_CUSTOMER_DATA);
-          //console.log("data", data)
-          token ? user() : login(authToken);
-          router.push('/customer/account');
-        }
-        
+        router.push('/customer/account');
       } else {
         router.push('/customer/account/login');
       }
@@ -87,7 +78,7 @@ const LoginPage = () => {
           </Button>
         </form>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={6} style={{margin: "0 auto"}}>
         <Typography>New Customers</Typography>
         <Typography style={{margin: "20px 0"}}>Creating an account has many benefits: check out faster, <br></br> keep more than one address, track orders and more.</Typography>
         <Button variant="contained" color="primary">
