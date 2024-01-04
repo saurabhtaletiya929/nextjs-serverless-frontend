@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import styles from "./Category.module.css";
 import { useQuery } from "@apollo/client";
 import CATEGORY_QUERY from "./Category.graphql";
@@ -25,23 +25,6 @@ export const Category = ({ filters }) => {
   const backUrl =
     category?.breadcrumbs &&
     category?.breadcrumbs[0]?.category_url_path + categoryUrlSuffix;
-
-  const [dynamicFilters, setDynamicFilters] = useState({
-    category_id: { eq: category.id },
-  });
-  const handleChangeEvent = useCallback(
-    (filterType, option) => {
-      setDynamicFilters((prevFilters) => {
-        const newFilters = { ...prevFilters };
-        if (!newFilters[filterType]) {
-          newFilters[filterType] = {};
-        }
-        newFilters[filterType] = { ...newFilters[filterType], eq: option };
-        return newFilters;
-      });
-    },
-    [dynamicFilters]
-  );
 
   return (
     <>
@@ -79,10 +62,7 @@ export const Category = ({ filters }) => {
             </nav>
           )}
 
-          <Products
-            filters={dynamicFilters}
-            handleChangeEvent={handleChangeEvent}
-          />
+          <Products filters={{ category_id: { eq: category.id } }} />
         </>
       </div>
     </>

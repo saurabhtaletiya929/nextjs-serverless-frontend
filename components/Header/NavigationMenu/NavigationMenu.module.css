@@ -23,7 +23,7 @@
 
 .categoryItem {
   position: relative;
-  display: inline;
+  display: inline-block;
 }
 
 .subMenu {
