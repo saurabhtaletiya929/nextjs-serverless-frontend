@@ -1,87 +1,15 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useCallback, useState } from "react";
 import styles from "./Category.module.css";
 import { useQuery } from "@apollo/client";
 import CATEGORY_QUERY from "./Category.graphql";
 import Products from "~/components/Products";
 import Link from "next/link";
 import Head from "next/head";
-import { Box, Container, Typography } from "@mui/material";
-import { Aside } from "../Aside/Aside";
-// import { useRouter } from "next/router";
 
 export const Category = ({ filters }) => {
-  // const router = useRouter();
   const { loading, data, error } = useQuery(CATEGORY_QUERY, {
     variables: { filters },
   });
-  const category = data?.categoryList[0];
-
-  const categoryUrlSuffix = data?.storeConfig?.category_url_suffix ?? "";
-
-  const backUrl =
-    category?.breadcrumbs &&
-    category?.breadcrumbs[0]?.category_url_path + categoryUrlSuffix;
-
-  const [dynamicFilters, setDynamicFilters] = useState({
-    category_id: [`${category.id}`],
-  });
-  const [showfilter, setShowfilters] = useState({});
-
-  const ObjectConverterComponent = (inputObject) => {
-    if (inputObject) {
-      let convertedObject = {};
-
-      Object.keys(inputObject).forEach((key) => {
-        const valuesArray = inputObject[key];
-        valuesArray.forEach((value) => {
-          // const transformedKey = `${key}: { eq: "${value}" }`;
-          convertedObject[key] = { eq: value };
-        });
-      });
-      return convertedObject;
-    }
-  };
-  // const updateQueryParams = () => {
-  //   const queryParams = {};
-
-  //   Object.keys(dynamicFilters).forEach((item) => {
-  //     if (dynamicFilters[item].length > 0) {
-  //       queryParams[item] = dynamicFilters[item].join(",");
-  //     }
-  //   });
-  //   console.log(queryParams);
-
-  //   // router.push({
-  //   //   pathname: router.pathname,
-  //   //   query: queryParams,
-  //   // });
-  // };
-
-  const handleChangeEvent = (filterType, option) => {
-    setDynamicFilters((prevFilters) => {
-      const newFilters = { ...prevFilters };
-
-      // If the filter category doesn't exist, initialize it as an array
-      if (!newFilters[filterType]) {
-        newFilters[filterType] = [];
-      }
-
-      // Check if the option is already selected, if yes, remove it; otherwise, add it
-      if (newFilters[filterType].includes(option)) {
-        newFilters[filterType] = newFilters[filterType].filter(
-          (item) => item !== option
-        );
-      } else {
-        newFilters[filterType] = [...newFilters[filterType], option];
-      }
-
-      return newFilters;
-    });
-  };
-
-  useEffect(() => {
-    setShowfilters(ObjectConverterComponent(dynamicFilters));
-  }, [dynamicFilters]);
 
   if (error) {
     console.error(error);
@@ -90,21 +18,46 @@ export const Category = ({ filters }) => {
 
   if (loading && !data) return <div>⌚️ Loading...</div>;
 
+  const category = data.categoryList[0];
+
+  const categoryUrlSuffix = data.storeConfig.category_url_suffix ?? "";
+
+  const backUrl =
+    category?.breadcrumbs &&
+    category?.breadcrumbs[0]?.category_url_path + categoryUrlSuffix;
+
+  const [dynamicFilters, setDynamicFilters] = useState({
+    category_id: { eq: category.id },
+  });
+  const handleChangeEvent = useCallback(
+    (filterType, option) => {
+      setDynamicFilters((prevFilters) => {
+        const newFilters = { ...prevFilters };
+        if (!newFilters[filterType]) {
+          newFilters[filterType] = {};
+        }
+        newFilters[filterType] = { ...newFilters[filterType], eq: option };
+        return newFilters;
+      });
+    },
+    [dynamicFilters]
+  );
+
   return (
     <>
-      {/* <Head>
+      <Head>
         <title>{category?.name}</title>
-      </Head> */}
+      </Head>
 
       <div className={styles.category}>
-        <Box className={styles.header}>
+        <header className={styles.header}>
           {backUrl && (
             <Link key={backUrl} href={backUrl}>
               <span className={styles.backLink}>⬅</span>
             </Link>
           )}
-          <Typography variant="h2">{category.name}</Typography>
-        </Box>
+          <h2>{category.name}</h2>
+        </header>
         <>
           {category.children?.length > 0 && (
             <nav className={styles.categoriesListWrapper}>
@@ -125,9 +78,13 @@ export const Category = ({ filters }) => {
               </ul>
             </nav>
           )}
+
+          <Products
+            filters={dynamicFilters}
+            handleChangeEvent={handleChangeEvent}
+          />
         </>
       </div>
-      <Products filters={showfilter} handleChangeEvent={handleChangeEvent} />
     </>
   );
 };

@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const { data } = useQuery(GET_CUSTOMER_DATA);
   const userInfo = data;
+
   const login = (authToken) => {
     setToken(authToken);
     localStorage.setItem("token", authToken);

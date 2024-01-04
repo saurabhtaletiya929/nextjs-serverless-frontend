@@ -82,23 +82,23 @@ export const Filters = ({ aggregations, handleChangeEvent }) => {
   );
   const isMobileView = useMediaQuery(theme.breakpoints.down("768"));
 
-  const sortedFilters = aggregations.sort(function (a, b) {
-    return a.attribute_code.localeCompare(b.attribute_code);
-  });
+  // const sortedFilters = aggregations.sort(function (a, b) {
+  //   return a.attribute_code.localeCompare(b.attribute_code);
+  // });
 
   const { visibleFilters, moreFilters } = useMemo(() => {
     const noOfFilters = isTabletView ? 5 : 7;
     return {
       visibleFilters:
-        sortedFilters.length <= noOfFilters
-          ? sortedFilters.slice(0, noOfFilters)
-          : sortedFilters.slice(0, noOfFilters - 1),
+        aggregations.length <= noOfFilters
+          ? aggregations.slice(0, noOfFilters)
+          : aggregations.slice(0, noOfFilters - 1),
       moreFilters:
-        sortedFilters.length > noOfFilters
-          ? sortedFilters.slice(noOfFilters - 1)
+        aggregations.length > noOfFilters
+          ? aggregations.slice(noOfFilters - 1)
           : [],
     };
-  }, [isTabletView, sortedFilters]);
+  }, [isTabletView, aggregations]);
 
   const [expanded, setExpended] = useState(null);
   const changeDropDownBehavior = (panel) => (event, isExpanded) => {

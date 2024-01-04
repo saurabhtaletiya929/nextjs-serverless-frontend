@@ -14,10 +14,10 @@ const ForgotPassword = () => {
         variables: { email },
       });
       if (loading) {
-        returb(<div>Loading</div>);
+        return <div>Loading</div>;
       }
       if (error) {
-        returb(<div>Error</div>);
+        return <div>Error</div>;
       }
       console.log(data);
     } catch (error) {}

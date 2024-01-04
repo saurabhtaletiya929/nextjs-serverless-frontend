@@ -9,7 +9,7 @@ import Button from "~/components/Button";
 import { Filters } from "../Filters/Filters";
 
 export const Products = ({ search, filters, handleChangeEvent }) => {
-  // console.log(filters);
+  console.log(filters);
   const { loading, data, fetchMore } = useQuery(PRODUCTS_QUERY, {
     variables: { search, filters },
     notifyOnNetworkStatusChange: true,
