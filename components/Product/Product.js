@@ -13,23 +13,27 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
-import { 
-  Typography, 
-  Box, 
-  Link, 
-  Grid, 
-  Rating, 
-  Paper, 
-  FormControl, 
-  InputLabel, 
-  Select, 
-  MenuItem, 
-  TextField, 
-  Container, 
-  IconButton } from '@mui/material'
+import { useRouter } from 'next/router';
+import { useCart } from '~/providers/context/CartContext';
+import { ADD_TO_CART_MUTATION } from '~/components/Checkout/Cart/Cartgraphql';
+import {
+  Typography,
+  Box,
+  Link,
+  Grid,
+  Rating,
+  Paper,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  Container,
+  IconButton
+} from '@mui/material'
 
 
-export const Product = ({ filters }) => {
+export const Product = ({ filters, cartId, cartItems }) => {
 
   const settings = {
     dots: true,
@@ -58,7 +62,7 @@ export const Product = ({ filters }) => {
 
   const product = data?.products.items[0] || [];
   console.log('product:', product);
-
+  
   // const relatedProducts = product.related_products || [];
   // console.log('image:', relatedProducts.thumbnail.url);
 
@@ -81,6 +85,50 @@ export const Product = ({ filters }) => {
     )
   }
 
+  const router = useRouter();
+  const { updateCartCount, setItemAdded } = useCart();
+  const [addToCartMutation] = useMutation(ADD_TO_CART_MUTATION);
+
+  const handleAddToCart = async () => {
+    try {
+      const { data } = await addToCartMutation();
+
+      console.log('GraphQL Response:', data);
+
+      if (data && data.addProductsToCart) {
+        const { cart, user_errors } = data.addProductsToCart;
+
+        if (user_errors && user_errors.length > 0) {
+          console.error(user_errors);
+          alert(`Failed to add item to the cart: ${user_errors[0].message}`);
+        } else {
+
+          const totalQuantity = cart.items.reduce((total, item) => total + item.quantity, 0);
+
+          console.log('Cart Items:', cart.items[0].product.sku);
+          console.log('Total Quantity:', totalQuantity);
+
+          setItemAdded(cart.items);
+          updateCartCount(totalQuantity);
+          // alert('Item added to the cart successfully!');
+
+          router.push({
+            pathname: '/checkout/cart',
+            query: { productId: cart.items[0].id, sku: cart.items[0].product.sku },
+          });
+          // router.push('/checkout/cart');
+        }
+      } else {
+        console.error('Unexpected response format from the server:', data);
+        // Handle unexpected response format
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error.message);
+    }
+  };
+
+
+
   return (
     <Container maxWidth="xl">
       <Head>
@@ -89,25 +137,28 @@ export const Product = ({ filters }) => {
 
       <Grid container spacing={2} sx={{ m: '50px 0' }}>
         <Grid item xs={12} md={6} className={styles.sliderContainer}>
-        <Slider {...settings} className={styles.slider}>
-          {product.media_gallery
-            .filter((media) => media.type === 'ProductImage')
-            .map((image, index) => (
-              <div className={styles.slide}>
-              <img
-                key={index}
-                src={
-                  resolveImage(image.url) + '?width=1000&height=1240&webp=auto'
-                }
-                width={500}
-                height={700}
-                alt={image.label}
-                loading={index === 0 ? 'eager' : 'lazy'}
-                className={styles.image}
-              />
-              </div>
-            ))}
-        </Slider>
+          {/* {product.__typename === 'ConfigurableProduct' && ( */}
+
+          <Slider {...settings} className={styles.slider}>
+            {product.media_gallery
+              .filter((media) => media.type === 'ProductImage')
+              .map((image, index) => (
+                <div className={styles.slide}>
+                  <img
+                    key={index}
+                    src={
+                      resolveImage(image.url) + '?width=1000&height=1240&webp=auto'
+                    }
+                    width={500}
+                    height={700}
+                    alt={image.label}
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    className={styles.image}
+                  />
+                </div>
+              ))}
+          </Slider>
+          {/* )} */}
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant='h4' sx={{ p: "10px 0" }}>{product.name}</Typography>
@@ -145,49 +196,36 @@ export const Product = ({ filters }) => {
           </Box>
 
           <Box sx={{ borderBottom: 1, borderColor: 'black', m: '0 270px 30px 0' }}></Box>
-
-          <Grid container spacing={2} >
-            <Grid item xs={6}>
-              <Typography>{aggregations[10].label}:</Typography>
-              <FormControl sx={{ minWidth: 90 }} size="small">
-                <InputLabel id="color-label">{aggregations[10].label}</InputLabel>
-                <Select
-                  labelId="color-label"
-                  id="color-select"
-                  value={selectedSize}
-                  label="Size"
-                  onChange={(e) => setSelectedSize(e.target.value)}
-                >
-                  {aggregations[10].options.map((option) => (
-                    <MenuItem key={option.label} value={option.label}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              {/* <Typography>{aggregations[10].options.map((option) => option.label).join(', ')}</Typography> */}
-            </Grid>
-
-            <Grid item xs={6}>
-              <Typography>{aggregations[12].label}:</Typography>
-              <FormControl sx={{ minWidth: 90 }} size="small">
-                <InputLabel id="color-label">{aggregations[12].label}</InputLabel>
-                <Select
-                  labelId="color-label"
-                  id="color-select"
-                  value={selectedColor}
-                  label="Color"
-                  onChange={(e) => setSelectedColor(e.target.value)}
-                >
-                  {aggregations[12].options.map((option) => (
-                    <MenuItem key={option.label} value={option.label}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              {/* <Typography>{aggregations[12].options.map((option) => option.label).join(', ')}</Typography> */}
-            </Grid>
+          <Grid container spacing={2}>
+            {product.configurable_options.map((attribute) => (
+              <Grid item xs={6} key={attribute.id}>
+                <Typography>{attribute.label}:</Typography>
+                <FormControl sx={{ minWidth: 90 }} size="small">
+                  <InputLabel id={`${attribute.attribute_code}-label`}>
+                    {attribute.label}
+                  </InputLabel>
+                  <Select
+                    labelId={`${attribute.attribute_code}-label`}
+                    id={`${attribute.attribute_code}-select`}
+                    value={attribute.attribute_code === 'color' ? selectedColor : selectedSize}
+                    label={attribute.label}
+                    onChange={(e) => {
+                      if (attribute.attribute_code === 'color') {
+                        setSelectedColor(e.target.value);
+                      } else if (attribute.attribute_code === 'size') {
+                        setSelectedSize(e.target.value);
+                      }
+                    }}
+                  >
+                    {attribute.values.map((option) => (
+                      <MenuItem key={option.value_index} value={option.label}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            ))}
           </Grid>
 
           <Box sx={{ m: '30px 0' }}>
@@ -195,7 +233,7 @@ export const Product = ({ filters }) => {
             <TextField sx={{ minWidth: 10 }} size="small">Qty</TextField>
           </Box>
 
-          <Button>Add to Cart</Button>
+          <Button onClick={handleAddToCart}>Add to Cart</Button>
 
           <Box sx={{ m: "30px 0" }}>
             <Link href="#Wishlist" sx={{ color: 'black', textDecoration: 'none' }}>
@@ -231,34 +269,34 @@ export const Product = ({ filters }) => {
             <Container maxWidth="xl" sx={{ m: "20px 0" }}>
               <Grid container spacing={2} >
                 <Grid item sm={2}>
-                  <Typography>{aggregations[4].label}:</Typography>
+                  <Typography>Style:</Typography>
                 </Grid>
                 <Grid item sm={2}>
-                  <Typography>{aggregations[4].options.map((option) => option.label).join(', ')}</Typography>
-                </Grid>
-              </Grid>
-              <Grid container spacing={2} >
-                <Grid item sm={2}>
-                  <Typography>{aggregations[11].label}:</Typography>
-                </Grid>
-                <Grid item sm={2}>
-                  <Typography>{aggregations[11].options.map((option) => option.label).join(', ')}</Typography>
+                  <Typography>Value</Typography>
                 </Grid>
               </Grid>
               <Grid container spacing={2} >
                 <Grid item sm={2}>
-                  <Typography>{aggregations[3].label}:</Typography>
+                  <Typography>Material:</Typography>
                 </Grid>
                 <Grid item sm={2}>
-                  <Typography>{aggregations[3].options.map((option) => option.label).join(', ')}</Typography>
+                  <Typography>Value</Typography>
                 </Grid>
               </Grid>
               <Grid container spacing={2} >
                 <Grid item sm={2}>
-                  <Typography>{aggregations[2].label}:</Typography>
+                  <Typography>Pattern:</Typography>
                 </Grid>
                 <Grid item sm={2}>
-                  <Typography>{aggregations[2].options.map((option) => option.label).join(', ')}</Typography>
+                  <Typography>Value</Typography>
+                </Grid>
+              </Grid>
+              <Grid container spacing={2} >
+                <Grid item sm={2}>
+                  <Typography>Climate:</Typography>
+                </Grid>
+                <Grid item sm={2}>
+                  <Typography>Value</Typography>
                 </Grid>
               </Grid>
             </Container>
@@ -267,7 +305,8 @@ export const Product = ({ filters }) => {
             <Container maxWidth="xl">
               <Box ref={reviewRef}>
                 <Typography variant='h5' sx={{ m: "20px" }}>Customer Reviews</Typography>
-                {product.reviews.items.map((review) => (
+                {product.reviews.items && product.reviews.items.length > 0 ? (
+                  product.reviews.items.map((review) => (
                   <Box sx={{ borderBottom: 1, borderColor: 'divider', m: "20px" }}>
                     <Typography variant='h6' sx={{ margin: "20px 0" }}>{review.summary}</Typography>
                     <Grid container spacing={2} key={review.id} sx={{ p: "25px 0" }}>
@@ -283,7 +322,10 @@ export const Product = ({ filters }) => {
                       </Grid>
                     </Grid>
                   </Box>
-                ))}
+                ))
+                ) : (
+                  <Typography>No reviews available</Typography>
+                )}
               </Box>
               <Box ref={reviewFormRef}>
                 <ReviewForm />
@@ -306,10 +348,7 @@ export const Product = ({ filters }) => {
             return (
               <Grid item key={relatedProduct.uid} xs={12} sm={6} md={4} lg={3}>
                 <Link
-                  href={{
-                    pathname: productPath,
-                    query: { type: "PRODUCT" },
-                  }}
+                  href={productPath}
                 // as={productPath}
                 >
                   <Paper elevation={2} style={{ p: '15px', marginBottom: '15px' }}>

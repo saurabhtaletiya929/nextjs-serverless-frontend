@@ -19,10 +19,61 @@ query ProductQuery($filters: ProductAttributeFilterInput!) {
     }
     items {
       id
-      sku
+      attribute_set_id
       name
-
-      reviews{
+      sku
+      __typename
+      price_range{
+        minimum_price{
+          regular_price{
+            value
+            currency
+          }
+        }
+      }
+      categories {
+        id
+      }
+      ... on ConfigurableProduct {
+        configurable_options {
+          id
+          attribute_id_v2
+          label
+          position
+          use_default
+          attribute_code
+          values {
+            value_index
+            label
+          }
+          product_id
+        }
+        variants {
+          product {
+            id
+            name
+            sku
+            attribute_set_id
+            ... on PhysicalProductInterface {
+              weight
+            }
+            price_range{
+              minimum_price{
+                regular_price{
+                  value
+                  currency
+                }
+              }
+            }
+          }
+          attributes {
+            uid
+            label
+            code
+            value_index
+          }
+        }
+        reviews{
         items{
           summary
           text
@@ -35,8 +86,10 @@ query ProductQuery($filters: ProductAttributeFilterInput!) {
           }
         }
       }
-
-      related_products {
+      description {
+        html
+      }
+        related_products {
         uid
         name
         url_key
@@ -58,20 +111,29 @@ query ProductQuery($filters: ProductAttributeFilterInput!) {
           url
         }
       }
-
-      description {
-        html
-      }
-
       media_gallery {
-        id: url
-        label
-        url
-        type: __typename
+          url
+          label
+          ... on ProductImage {
+            id: url
+            label
+            url
+            type: __typename
+          }
+          ... on ProductVideo {
+              video_content {
+                  media_type
+                  video_provider
+                  video_url
+                  video_title
+                  video_description
+                  video_metadata
+              }
+          }
       }
-
       price_range {
         ...price_range
+      }
       }
     }
   }
