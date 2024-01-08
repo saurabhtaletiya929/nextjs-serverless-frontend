@@ -7,8 +7,6 @@ import Price from '~/components/Price'
 import Button from '~/components/Button'
 import Head from 'next/head'
 import { TabPanel, Tabs, Tab } from '@mui/material';
-// import RelatedProducts from '../RelatedProducts'
-import ReviewForm from '../ReviewForm/ReviewForm'
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -31,6 +29,8 @@ import {
   Container,
   IconButton
 } from '@mui/material'
+import { ProductDetails } from './ProductDetails.js'
+import { ColorField } from './ColorField'
 
 
 export const Product = ({ filters, cartId, cartItems }) => {
@@ -49,12 +49,10 @@ export const Product = ({ filters, cartId, cartItems }) => {
   const reviewRef = useRef(null);
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
-
-  const [value, setValue] = useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const [quantity, setQuantity] = useState(0);
+  const [colorError, setColorError] = useState('');
+  const [sizeError, setSizeError] = useState('');
+  const [quantityError, setQuantityError] = useState('');
 
   const { loading, data } = useQuery(PRODUCT_QUERY, { variables: { filters } });
 
@@ -62,72 +60,87 @@ export const Product = ({ filters, cartId, cartItems }) => {
 
   const product = data?.products.items[0] || [];
   console.log('product:', product);
-  
-  // const relatedProducts = product.related_products || [];
-  // console.log('image:', relatedProducts.thumbnail.url);
-
-
-  // const productUrlSuffix = product. product_url_suffix ?? "";
 
   const productUrlSuffix = data?.storeConfig.product_url_suffix ?? "";
-  //  console.log('relatedProducts.url_key:', relatedProducts.url_key);
-  //  console.log('productUrlSuffix:', productUrlSuffix);
-  // console.log('productreview:', product.reviews.items.summary);
-
-  const aggregations = data?.products.aggregations || [];
-  console.log('aggregations:', aggregations);
-
-  const RatingStars = ({ rating }) => {
-    return (
-      <div>
-        <Rating value={rating} readOnly />
-      </div>
-    )
-  }
 
   const router = useRouter();
   const { updateCartCount, setItemAdded } = useCart();
   const [addToCartMutation] = useMutation(ADD_TO_CART_MUTATION);
 
   const handleAddToCart = async () => {
-    try {
-      const { data } = await addToCartMutation();
 
-      console.log('GraphQL Response:', data);
+    if (!selectedColor) {
+      setColorError('Please select a color.');
+    } else {
+      setColorError('');
+    }
 
-      if (data && data.addProductsToCart) {
-        const { cart, user_errors } = data.addProductsToCart;
+    if (!selectedSize) {
+      setSizeError('Please select a size.');
+    } else {
+      setSizeError('');
+    }
 
-        if (user_errors && user_errors.length > 0) {
-          console.error(user_errors);
-          alert(`Failed to add item to the cart: ${user_errors[0].message}`);
+    if (quantity <= 0) {
+      setQuantityError('Quantity must be greater than 0.');
+    } else {
+      setQuantityError('');
+    }
+
+    if (selectedColor && selectedSize && quantity > 0) {
+      try {
+        const { data } = await addToCartMutation();
+
+        console.log('GraphQL Response:', data);
+
+        if (data && data.addProductsToCart) {
+          const { cart, user_errors } = data.addProductsToCart;
+
+          if (user_errors && user_errors.length > 0) {
+            console.error(user_errors);
+            alert(`Failed to add item to the cart: ${user_errors[0].message}`);
+          } else {
+
+            const totalQuantity = cart.items.reduce((total, item) => total + item.quantity, 0);
+
+            console.log('Cart Items:', cart.items[0].product.sku);
+            console.log('Total Quantity:', totalQuantity);
+
+            setItemAdded(cart.items);
+            updateCartCount(totalQuantity);
+            // alert('Item added to the cart successfully!');
+
+            router.push({
+              pathname: '/checkout/cart',
+              query: { productId: cart.items[0].id, sku: cart.items[0].product.sku },
+            });
+            // router.push('/checkout/cart');
+          }
         } else {
-
-          const totalQuantity = cart.items.reduce((total, item) => total + item.quantity, 0);
-
-          console.log('Cart Items:', cart.items[0].product.sku);
-          console.log('Total Quantity:', totalQuantity);
-
-          setItemAdded(cart.items);
-          updateCartCount(totalQuantity);
-          // alert('Item added to the cart successfully!');
-
-          router.push({
-            pathname: '/checkout/cart',
-            query: { productId: cart.items[0].id, sku: cart.items[0].product.sku },
-          });
-          // router.push('/checkout/cart');
+          console.error('Unexpected response format from the server:', data);
+          // Handle unexpected response format
         }
-      } else {
-        console.error('Unexpected response format from the server:', data);
-        // Handle unexpected response format
+      } catch (error) {
+        console.error('Error adding to cart:', error.message);
       }
-    } catch (error) {
-      console.error('Error adding to cart:', error.message);
     }
   };
 
+  const handleColorChange = (e) => {
+    setSelectedColor(e.target.value);
+    setColorError(''); 
+  };
 
+  const handleSizeChange = (e) => {
+    setSelectedSize(e.target.value);
+    setSizeError(''); 
+  };  
+
+  const handleQtyChange = (e) => {
+    const value = parseInt(e.target.value, 10) || '';
+    setQuantity(value);
+    setQuantityError('');
+  };
 
   return (
     <Container maxWidth="xl">
@@ -196,7 +209,16 @@ export const Product = ({ filters, cartId, cartItems }) => {
           </Box>
 
           <Box sx={{ borderBottom: 1, borderColor: 'black', m: '0 270px 30px 0' }}></Box>
-          <Grid container spacing={2}>
+          <ColorField 
+          ColorField={product}
+          selectedColor={selectedColor}
+          handleColorChange={handleColorChange}
+          colorError={colorError}
+          selectedSize={selectedSize}
+          handleSizeChange={handleSizeChange}
+          sizeError={sizeError}
+          />
+          {/* <Grid container spacing={2}>
             {product.configurable_options.map((attribute) => (
               <Grid item xs={6} key={attribute.id}>
                 <Typography>{attribute.label}:</Typography>
@@ -209,13 +231,7 @@ export const Product = ({ filters, cartId, cartItems }) => {
                     id={`${attribute.attribute_code}-select`}
                     value={attribute.attribute_code === 'color' ? selectedColor : selectedSize}
                     label={attribute.label}
-                    onChange={(e) => {
-                      if (attribute.attribute_code === 'color') {
-                        setSelectedColor(e.target.value);
-                      } else if (attribute.attribute_code === 'size') {
-                        setSelectedSize(e.target.value);
-                      }
-                    }}
+                    onChange={attribute.attribute_code === 'color' ? handleColorChange : handleSizeChange}
                   >
                     {attribute.values.map((option) => (
                       <MenuItem key={option.value_index} value={option.label}>
@@ -224,13 +240,27 @@ export const Product = ({ filters, cartId, cartItems }) => {
                     ))}
                   </Select>
                 </FormControl>
+                {attribute.attribute_code === 'color' && colorError && (
+                  <Typography color="error">{colorError}</Typography>
+                )}
+                {attribute.attribute_code === 'size' && sizeError && (
+                  <Typography color="error">{sizeError}</Typography>
+                )}
               </Grid>
             ))}
-          </Grid>
+          </Grid> */}
 
           <Box sx={{ m: '30px 0' }}>
             <Typography>Qty</Typography>
-            <TextField sx={{ minWidth: 10 }} size="small">Qty</TextField>
+            <TextField 
+            sx={{ minWidth: 10 }} 
+            size="small"
+            value={quantity}
+            onChange={(e) => handleQtyChange(e)}
+            >
+            Qty
+            </TextField>
+            {quantityError && <Typography color="error">{quantityError}</Typography>}
           </Box>
 
           <Button onClick={handleAddToCart}>Add to Cart</Button>
@@ -248,93 +278,7 @@ export const Product = ({ filters, cartId, cartItems }) => {
         </Grid>
       </Grid>
 
-      <Paper sx={{ m: '50px 0' }}>
-        <Box sx={{ border: 1, borderColor: 'divider' }}>
-          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tab label="Detail" />
-            <Tab label="More Information" />
-            <Tab label="Review" />
-          </Tabs>
-          {value === 0 && (
-            <Container maxWidth="xl">
-              {product.description?.html && (
-                <div
-                  className={styles.description}
-                  dangerouslySetInnerHTML={{ __html: product.description.html }}
-                />
-              )}
-            </Container>
-          )}
-          {value === 1 && (
-            <Container maxWidth="xl" sx={{ m: "20px 0" }}>
-              <Grid container spacing={2} >
-                <Grid item sm={2}>
-                  <Typography>Style:</Typography>
-                </Grid>
-                <Grid item sm={2}>
-                  <Typography>Value</Typography>
-                </Grid>
-              </Grid>
-              <Grid container spacing={2} >
-                <Grid item sm={2}>
-                  <Typography>Material:</Typography>
-                </Grid>
-                <Grid item sm={2}>
-                  <Typography>Value</Typography>
-                </Grid>
-              </Grid>
-              <Grid container spacing={2} >
-                <Grid item sm={2}>
-                  <Typography>Pattern:</Typography>
-                </Grid>
-                <Grid item sm={2}>
-                  <Typography>Value</Typography>
-                </Grid>
-              </Grid>
-              <Grid container spacing={2} >
-                <Grid item sm={2}>
-                  <Typography>Climate:</Typography>
-                </Grid>
-                <Grid item sm={2}>
-                  <Typography>Value</Typography>
-                </Grid>
-              </Grid>
-            </Container>
-          )}
-          {value === 2 && (
-            <Container maxWidth="xl">
-              <Box ref={reviewRef}>
-                <Typography variant='h5' sx={{ m: "20px" }}>Customer Reviews</Typography>
-                {product.reviews.items && product.reviews.items.length > 0 ? (
-                  product.reviews.items.map((review) => (
-                  <Box sx={{ borderBottom: 1, borderColor: 'divider', m: "20px" }}>
-                    <Typography variant='h6' sx={{ margin: "20px 0" }}>{review.summary}</Typography>
-                    <Grid container spacing={2} key={review.id} sx={{ p: "25px 0" }}>
-                      <Grid item xs={12} sm={2}>
-                        <Typography>{review.ratings_breakdown[0].name}</Typography>
-                      </Grid>
-                      <Grid item xs={12} sm={2}>
-                        <RatingStars rating={review.ratings_breakdown[0].value} />
-                      </Grid>
-                      <Grid item xs={6} sm={8}>
-                        <Typography>{review.text}</Typography>
-                        <Typography>Review by {review.nickname} {review.created_at}</Typography>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                ))
-                ) : (
-                  <Typography>No reviews available</Typography>
-                )}
-              </Box>
-              <Box ref={reviewFormRef}>
-                <ReviewForm />
-              </Box>
-            </Container>
-          )}
-        </Box>
-
-      </Paper>
+      <ProductDetails TabsProduct={product} />
 
       <Box sx={{ m: '50px 0' }}>
         <Typography>We found other products you might like!</Typography>
