@@ -12,7 +12,7 @@ import {
     Tabs
   } from '@mui/material'
 
-export const ProductDetails = ({ TabsProduct }) => {
+export const ProductDetails = ({ product }) => {
 
     const [value, setValue] = useState(0);
 
@@ -41,10 +41,10 @@ export const ProductDetails = ({ TabsProduct }) => {
                 </Tabs>
                 {value === 0 && (
                     <Container maxWidth="xl">
-                        {TabsProduct.description?.html && (
+                        {product.description?.html && (
                             <div
                                 className={styles.description}
-                                dangerouslySetInnerHTML={{ __html: TabsProduct.description.html }}
+                                dangerouslySetInnerHTML={{ __html: product.description.html }}
                             />
                         )}
                     </Container>
@@ -89,8 +89,8 @@ export const ProductDetails = ({ TabsProduct }) => {
                     <Container maxWidth="xl">
                         <Box ref={reviewRef}>
                             <Typography variant='h5' sx={{ m: "20px" }}>Customer Reviews</Typography>
-                            {TabsProduct.reviews.items && TabsProduct.reviews.items.length > 0 ? (
-                                TabsProduct.reviews.items.map((review) => (
+                            {product.reviews.items && product.reviews.items.length > 0 ? (
+                                product.reviews.items.map((review) => (
                                     <Box sx={{ borderBottom: 1, borderColor: 'divider', m: "20px" }}>
                                         <Typography variant='h6' sx={{ margin: "20px 0" }}>{review.summary}</Typography>
                                         <Grid container spacing={2} key={review.id} sx={{ p: "25px 0" }}>

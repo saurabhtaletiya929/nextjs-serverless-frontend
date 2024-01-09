@@ -6,7 +6,6 @@ import PRODUCT_QUERY from './Product.graphql'
 import Price from '~/components/Price'
 import Button from '~/components/Button'
 import Head from 'next/head'
-import { TabPanel, Tabs, Tab } from '@mui/material';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -19,21 +18,16 @@ import {
   Box,
   Link,
   Grid,
-  Rating,
-  Paper,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
   Container,
   IconButton
 } from '@mui/material'
 import { ProductDetails } from './ProductDetails.js'
-import { ColorField } from './ColorField'
+import { ColorSizeField } from './ColorSizeField'
+import { QuantityField } from './QuantityField'
+import { RelatedProducts } from './RelatedProducts'
 
 
-export const Product = ({ filters, cartId, cartItems }) => {
+export const Product = ({ filters }) => {
 
   const settings = {
     dots: true,
@@ -118,7 +112,6 @@ export const Product = ({ filters, cartId, cartItems }) => {
           }
         } else {
           console.error('Unexpected response format from the server:', data);
-          // Handle unexpected response format
         }
       } catch (error) {
         console.error('Error adding to cart:', error.message);
@@ -150,7 +143,6 @@ export const Product = ({ filters, cartId, cartItems }) => {
 
       <Grid container spacing={2} sx={{ m: '50px 0' }}>
         <Grid item xs={12} md={6} className={styles.sliderContainer}>
-          {/* {product.__typename === 'ConfigurableProduct' && ( */}
 
           <Slider {...settings} className={styles.slider}>
             {product.media_gallery
@@ -171,7 +163,6 @@ export const Product = ({ filters, cartId, cartItems }) => {
                 </div>
               ))}
           </Slider>
-          {/* )} */}
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant='h4' sx={{ p: "10px 0" }}>{product.name}</Typography>
@@ -209,8 +200,8 @@ export const Product = ({ filters, cartId, cartItems }) => {
           </Box>
 
           <Box sx={{ borderBottom: 1, borderColor: 'black', m: '0 270px 30px 0' }}></Box>
-          <ColorField 
-          ColorField={product}
+          <ColorSizeField 
+          product={product}
           selectedColor={selectedColor}
           handleColorChange={handleColorChange}
           colorError={colorError}
@@ -218,50 +209,12 @@ export const Product = ({ filters, cartId, cartItems }) => {
           handleSizeChange={handleSizeChange}
           sizeError={sizeError}
           />
-          {/* <Grid container spacing={2}>
-            {product.configurable_options.map((attribute) => (
-              <Grid item xs={6} key={attribute.id}>
-                <Typography>{attribute.label}:</Typography>
-                <FormControl sx={{ minWidth: 90 }} size="small">
-                  <InputLabel id={`${attribute.attribute_code}-label`}>
-                    {attribute.label}
-                  </InputLabel>
-                  <Select
-                    labelId={`${attribute.attribute_code}-label`}
-                    id={`${attribute.attribute_code}-select`}
-                    value={attribute.attribute_code === 'color' ? selectedColor : selectedSize}
-                    label={attribute.label}
-                    onChange={attribute.attribute_code === 'color' ? handleColorChange : handleSizeChange}
-                  >
-                    {attribute.values.map((option) => (
-                      <MenuItem key={option.value_index} value={option.label}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                {attribute.attribute_code === 'color' && colorError && (
-                  <Typography color="error">{colorError}</Typography>
-                )}
-                {attribute.attribute_code === 'size' && sizeError && (
-                  <Typography color="error">{sizeError}</Typography>
-                )}
-              </Grid>
-            ))}
-          </Grid> */}
 
-          <Box sx={{ m: '30px 0' }}>
-            <Typography>Qty</Typography>
-            <TextField 
-            sx={{ minWidth: 10 }} 
-            size="small"
-            value={quantity}
-            onChange={(e) => handleQtyChange(e)}
-            >
-            Qty
-            </TextField>
-            {quantityError && <Typography color="error">{quantityError}</Typography>}
-          </Box>
+          <QuantityField 
+          quantity={quantity}
+          handleQtyChange={handleQtyChange}
+          quantityError={quantityError}
+          />
 
           <Button onClick={handleAddToCart}>Add to Cart</Button>
 
@@ -278,43 +231,12 @@ export const Product = ({ filters, cartId, cartItems }) => {
         </Grid>
       </Grid>
 
-      <ProductDetails TabsProduct={product} />
+      <ProductDetails product={product} />
 
-      <Box sx={{ m: '50px 0' }}>
-        <Typography>We found other products you might like!</Typography>
-        <Grid container spacing={2}>
-          {product.related_products.map((relatedProduct) => {
-
-            const productPath = `/${relatedProduct.url_key + productUrlSuffix}`;
-
-            console.log("Generated URL:", productPath);
-
-            return (
-              <Grid item key={relatedProduct.uid} xs={12} sm={6} md={4} lg={3}>
-                <Link
-                  href={productPath}
-                // as={productPath}
-                >
-                  <Paper elevation={2} style={{ p: '15px', marginBottom: '15px' }}>
-                    <img
-                      src={
-                        resolveImage(relatedProduct.thumbnail.url) +
-                        '?width=1000&height=1240&webp=auto'
-                      }
-                      alt={relatedProduct.thumbnail.label}
-                      style={{ width: '100%', height: 'auto' }}
-                    />
-                    <Typography variant="subtitle1" sx={{ marginTop: '10px' }}>
-                      {relatedProduct.name}
-                    </Typography>
-                    <Typography>As low as <Price {...product.price_range} /></Typography>
-                  </Paper>
-                </Link>
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Box>
+      <RelatedProducts 
+      product={product}
+      productUrlSuffix={productUrlSuffix}
+      />
 
     </Container>
   )
