@@ -50,15 +50,6 @@
   padding: 0 10px;
 }
 
-.footer {
-  background-color: #111130;
-  border-top: 1px solid #eee;
-  padding: 40px 20px;
-  text-align: center;
-  color: #666;
-  font-size: 12px;
-}
-
 /* Tablet */
 @media (min-width: 600px) {
   .header {
@@ -66,3 +57,13 @@
     grid-gap: 20px;
   }
 }
+
+/************** Footer CSS Starts******************/
+.footer {
+  background: #e2e2e2;
+  padding: 40px 20px;
+  text-align: center;
+  color: #666;
+  font-size: 12px;
+}
+/************** Footer CSS Ends ******************/

@@ -1,0 +1,15 @@
+.customerMenu{
+    position: relative;
+}
+.activeLink{
+    border-left: 2px red solid;
+    background-color: rgba(0, 0, 0, 0.04);
+}
+.nonActiveLink{
+    border-left: 2px transparent solid;
+}
+.customerMenu li,
+.customerMenu a {
+    display: block;
+    text-wrap: wrap;
+}

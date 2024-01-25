@@ -50,7 +50,7 @@ export const Product = ({ filters }) => {
 
   const { loading, data } = useQuery(PRODUCT_QUERY, { variables: { filters } });
 
-  if (loading && !data) return <div>⌚️ Loading...</div>
+  if (loading && !data) return <div>⌚️ Loading...</div>;
 
   const product = data?.products.items[0] || [];
   console.log('product:', product);
