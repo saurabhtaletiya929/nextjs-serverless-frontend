@@ -16,16 +16,16 @@ import { ADD_TO_CART_MUTATION } from '~/components/Checkout/Cart/Cartgraphql';
 import {
   Typography,
   Box,
-  Link,
   Grid,
   Container,
-  IconButton
+  IconButton,
+  Link,
 } from '@mui/material'
 import { ProductDetails } from './ProductDetails.js'
 import { ColorSizeField } from './ColorSizeField'
 import { QuantityField } from './QuantityField'
 import { RelatedProducts } from './RelatedProducts'
-
+import { animateScroll as scroll } from 'react-scroll';
 
 export const Product = ({ filters }) => {
 
@@ -47,6 +47,7 @@ export const Product = ({ filters }) => {
   const [colorError, setColorError] = useState('');
   const [sizeError, setSizeError] = useState('');
   const [quantityError, setQuantityError] = useState('');
+  const [activeTab, setActiveTab] = useState(0);
 
   const { loading, data } = useQuery(PRODUCT_QUERY, { variables: { filters } });
 
@@ -121,18 +122,23 @@ export const Product = ({ filters }) => {
 
   const handleColorChange = (e) => {
     setSelectedColor(e.target.value);
-    setColorError(''); 
+    setColorError('');
   };
 
   const handleSizeChange = (e) => {
     setSelectedSize(e.target.value);
-    setSizeError(''); 
-  };  
+    setSizeError('');
+  };
 
   const handleQtyChange = (e) => {
     const value = parseInt(e.target.value, 10) || '';
     setQuantity(value);
     setQuantityError('');
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    scroll.scrollToTop();
   };
 
   return (
@@ -152,7 +158,7 @@ export const Product = ({ filters }) => {
                   <img
                     key={index}
                     src={
-                      resolveImage(image.url) + '?width=1000&height=1240&webp=auto'
+                      resolveImage(image.url) + `?width=1000&height=1240&webp=auto&color=${selectedColor}`
                     }
                     width={500}
                     height={700}
@@ -168,17 +174,15 @@ export const Product = ({ filters }) => {
           <Typography variant='h4' sx={{ p: "10px 0" }}>{product.name}</Typography>
           <Box sx={{ margin: "20px 0" }}>
             <Link href="#review" onClick={() => {
-              if (reviewRef.current) {
-                reviewRef.current.scrollIntoView({ behavior: 'smooth' });
-              }
+                setActiveTab(2);
+                reviewRef.current?.scrollIntoView({ behavior: 'smooth' });
             }}>
               Review
             </Link>
             &nbsp;&nbsp;&nbsp;
             <Link href="#addyourreview" onClick={() => {
-              if (reviewFormRef.current) {
-                reviewFormRef.current.scrollIntoView({ behavior: 'smooth' });
-              }
+                setActiveTab(2);
+                reviewFormRef.current?.scrollIntoView({ behavior: 'smooth' });
             }}>
               Add Your Review
             </Link>
@@ -200,20 +204,20 @@ export const Product = ({ filters }) => {
           </Box>
 
           <Box sx={{ borderBottom: 1, borderColor: 'black', m: '0 270px 30px 0' }}></Box>
-          <ColorSizeField 
-          product={product}
-          selectedColor={selectedColor}
-          handleColorChange={handleColorChange}
-          colorError={colorError}
-          selectedSize={selectedSize}
-          handleSizeChange={handleSizeChange}
-          sizeError={sizeError}
+          <ColorSizeField
+            product={product}
+            selectedColor={selectedColor}
+            handleColorChange={handleColorChange}
+            colorError={colorError}
+            selectedSize={selectedSize}
+            handleSizeChange={handleSizeChange}
+            sizeError={sizeError}
           />
 
-          <QuantityField 
-          quantity={quantity}
-          handleQtyChange={handleQtyChange}
-          quantityError={quantityError}
+          <QuantityField
+            quantity={quantity}
+            handleQtyChange={handleQtyChange}
+            quantityError={quantityError}
           />
 
           <Button onClick={handleAddToCart}>Add to Cart</Button>
@@ -231,11 +235,15 @@ export const Product = ({ filters }) => {
         </Grid>
       </Grid>
 
-      <ProductDetails product={product} />
+      <ProductDetails
+        product={product}
+        activeTab={activeTab}
+        handleTabChange={handleTabChange} 
+      />
 
-      <RelatedProducts 
-      product={product}
-      productUrlSuffix={productUrlSuffix}
+      <RelatedProducts
+        product={product}
+        productUrlSuffix={productUrlSuffix}
       />
 
     </Container>

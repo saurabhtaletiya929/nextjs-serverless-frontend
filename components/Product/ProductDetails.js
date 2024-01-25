@@ -8,38 +8,40 @@ import {
     Rating,
     Paper,
     Container,
-    Tab, 
+    Tab,
     Tabs
-  } from '@mui/material'
+} from '@mui/material'
+import { Link as ScrollLink, animateScroll as scroll } from 'react-scroll';
 
-export const ProductDetails = ({ product }) => {
 
-    const [value, setValue] = useState(0);
-
-    const handleChange = (event, newValue) => {
-      setValue(newValue);
-    };
+export const ProductDetails = ({ product, activeTab, handleTabChange }) => {
 
     const reviewFormRef = useRef(null);
     const reviewRef = useRef(null);
+    const [value, setValue] = useState(0);
+
+    // const handleChange = (event, newValue) => {
+    //     setValue(newValue);
+    //     scroll.scrollToTop();
+    // };
 
     const RatingStars = ({ rating }) => {
         return (
-          <div>
-            <Rating value={rating} readOnly />
-          </div>
+            <div>
+                <Rating value={rating} readOnly />
+            </div>
         )
-      }
+    }
 
     return (
         <Paper sx={{ m: '50px 0' }}>
             <Box sx={{ border: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={activeTab} onChange={(event, newValue) => handleTabChange(newValue)} aria-label="basic tabs example" sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tab label="Detail" />
                     <Tab label="More Information" />
                     <Tab label="Review" />
                 </Tabs>
-                {value === 0 && (
+                {activeTab === 0 && (
                     <Container maxWidth="xl">
                         {product.description?.html && (
                             <div
@@ -49,7 +51,7 @@ export const ProductDetails = ({ product }) => {
                         )}
                     </Container>
                 )}
-                {value === 1 && (
+                {activeTab === 1 && (
                     <Container maxWidth="xl" sx={{ m: "20px 0" }}>
                         <Grid container spacing={2} >
                             <Grid item sm={2}>
@@ -85,9 +87,9 @@ export const ProductDetails = ({ product }) => {
                         </Grid>
                     </Container>
                 )}
-                {value === 2 && (
+                {activeTab === 2 && (
                     <Container maxWidth="xl">
-                        <Box ref={reviewRef}>
+                        <Box id="review" ref={reviewRef}>
                             <Typography variant='h5' sx={{ m: "20px" }}>Customer Reviews</Typography>
                             {product.reviews.items && product.reviews.items.length > 0 ? (
                                 product.reviews.items.map((review) => (
@@ -108,10 +110,10 @@ export const ProductDetails = ({ product }) => {
                                     </Box>
                                 ))
                             ) : (
-                                <Typography>No reviews available</Typography>
+                                <Typography sx={{ margin: '30px' }}>No reviews available</Typography>
                             )}
                         </Box>
-                        <Box ref={reviewFormRef}>
+                        <Box id="addyourreview" ref={reviewFormRef}>
                             <ReviewForm />
                         </Box>
                     </Container>

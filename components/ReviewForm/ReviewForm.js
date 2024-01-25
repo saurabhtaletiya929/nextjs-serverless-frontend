@@ -8,6 +8,7 @@ const ReviewForm = () => {
   const [nickname, setNickname] = useState('');
   const [summary, setSummary] = useState('');
   const [reviewText, setReviewText] = useState('');
+  const [errors, setErrors] = useState({});
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
@@ -15,6 +16,28 @@ const ReviewForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const newErrors = {};
+    if (!nickname.trim()) {
+      newErrors.nickname = 'Nickname is required';
+    }
+    if (!summary.trim()) {
+      newErrors.summary = 'Summary is required';
+    }
+    if (!reviewText.trim()) {
+      newErrors.reviewText = 'Review is required';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+    } else {
+      console.log('Form submitted:', { rating, nickname, summary, reviewText });
+      setRating(0);
+      setNickname('');
+      setSummary('');
+      setReviewText('');
+      setErrors({});
+    }
   };
 
   const RatingStars = ({ rating, onRatingChange }) => {
@@ -56,6 +79,9 @@ const ReviewForm = () => {
             style={{ width: "30%" }}
           />
         </div>
+        <Typography variant="caption" color="error">
+          {errors.nickname}
+        </Typography>
 
         <div>
           <InputLabel className={styles.label}>Summary</InputLabel><br></br>
@@ -67,6 +93,9 @@ const ReviewForm = () => {
             style={{ width: "30%" }}
           />
         </div>
+        <Typography variant="caption" color="error">
+          {errors.summary}
+        </Typography>
 
         <div>
           <InputLabel className={styles.label}>Review</InputLabel><br></br>
@@ -77,6 +106,9 @@ const ReviewForm = () => {
             style={{ width: "30%" }}
           ></TextField>
         </div>
+        <Typography variant="caption" color="error">
+          {errors.reviewText}
+        </Typography>
 
         <div style={{margin: '20px 0'}}>
           <Button type="submit" style={{ width: "20%" }} onClick={handleSubmit}>Submit Review</Button>
