@@ -1,18 +1,15 @@
 import React, { useState, useRef } from 'react'
 import styles from './Product.module.css'
-import { useQuery, useMutation } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import { resolveImage } from '~/lib/resolve-image'
 import PRODUCT_QUERY from './Product.graphql'
 import Price from '~/components/Price'
-import Button from '~/components/Button'
 import Head from 'next/head'
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
-import { useRouter } from 'next/router';
-import { useCart } from '~/providers/context/CartContext';
-import { ADD_TO_CART_MUTATION } from '~/components/Checkout/Cart/Cartgraphql';
+import { AddToCart } from './AddToCart'
 import {
   Typography,
   Box,
@@ -26,6 +23,8 @@ import { ColorSizeField } from './ColorSizeField'
 import { QuantityField } from './QuantityField'
 import { RelatedProducts } from './RelatedProducts'
 import { animateScroll as scroll } from 'react-scroll';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import CompareIcon from '@mui/icons-material/Compare';
 
 export const Product = ({ filters }) => {
 
@@ -57,68 +56,6 @@ export const Product = ({ filters }) => {
   console.log('product:', product);
 
   const productUrlSuffix = data?.storeConfig.product_url_suffix ?? "";
-
-  const router = useRouter();
-  const { updateCartCount, setItemAdded } = useCart();
-  const [addToCartMutation] = useMutation(ADD_TO_CART_MUTATION);
-
-  const handleAddToCart = async () => {
-
-    if (!selectedColor) {
-      setColorError('Please select a color.');
-    } else {
-      setColorError('');
-    }
-
-    if (!selectedSize) {
-      setSizeError('Please select a size.');
-    } else {
-      setSizeError('');
-    }
-
-    if (quantity <= 0) {
-      setQuantityError('Quantity must be greater than 0.');
-    } else {
-      setQuantityError('');
-    }
-
-    if (selectedColor && selectedSize && quantity > 0) {
-      try {
-        const { data } = await addToCartMutation();
-
-        console.log('GraphQL Response:', data);
-
-        if (data && data.addProductsToCart) {
-          const { cart, user_errors } = data.addProductsToCart;
-
-          if (user_errors && user_errors.length > 0) {
-            console.error(user_errors);
-            alert(`Failed to add item to the cart: ${user_errors[0].message}`);
-          } else {
-
-            const totalQuantity = cart.items.reduce((total, item) => total + item.quantity, 0);
-
-            console.log('Cart Items:', cart.items[0].product.sku);
-            console.log('Total Quantity:', totalQuantity);
-
-            setItemAdded(cart.items);
-            updateCartCount(totalQuantity);
-            // alert('Item added to the cart successfully!');
-
-            router.push({
-              pathname: '/checkout/cart',
-              query: { productId: cart.items[0].id, sku: cart.items[0].product.sku },
-            });
-            // router.push('/checkout/cart');
-          }
-        } else {
-          console.error('Unexpected response format from the server:', data);
-        }
-      } catch (error) {
-        console.error('Error adding to cart:', error.message);
-      }
-    }
-  };
 
   const handleColorChange = (e) => {
     setSelectedColor(e.target.value);
@@ -173,19 +110,30 @@ export const Product = ({ filters }) => {
         <Grid item xs={12} md={6}>
           <Typography variant='h4' sx={{ p: "10px 0" }}>{product.name}</Typography>
           <Box sx={{ margin: "20px 0" }}>
-            <Link href="#review" onClick={() => {
-                setActiveTab(2);
-                reviewRef.current?.scrollIntoView({ behavior: 'smooth' });
-            }}>
-              Review
-            </Link>
-            &nbsp;&nbsp;&nbsp;
-            <Link href="#addyourreview" onClick={() => {
+            {product.reviews.items && product.reviews.items.length > 0 ? (
+              <>
+                <Link href="#review" onClick={() => {
+                  setActiveTab(2);
+                  reviewRef.current?.scrollIntoView({ behavior: 'smooth' });
+                }}>
+                  Review
+                </Link>
+                &nbsp;&nbsp;&nbsp;
+                <Link href="#addyourreview" onClick={() => {
+                  setActiveTab(2);
+                  reviewFormRef.current?.scrollIntoView({ behavior: 'smooth' });
+                }}>
+                  Add Your Review
+                </Link>
+              </>
+            ) : (
+              <Link href="#addyourreview" onClick={() => {
                 setActiveTab(2);
                 reviewFormRef.current?.scrollIntoView({ behavior: 'smooth' });
-            }}>
-              Add Your Review
-            </Link>
+              }}>
+                Be the First Reviewer
+              </Link>
+            )}
           </Box>
 
           <Box>
@@ -220,15 +168,28 @@ export const Product = ({ filters }) => {
             quantityError={quantityError}
           />
 
-          <Button onClick={handleAddToCart}>Add to Cart</Button>
+          <AddToCart
+            selectedColor={selectedColor}
+            selectedSize={selectedSize}
+            quantity={quantity}
+            setColorError={setColorError}
+            setSizeError={setSizeError}
+            setQuantityError={setQuantityError}
+          />
 
           <Box sx={{ m: "30px 0" }}>
-            <Link href="#Wishlist" sx={{ color: 'black', textDecoration: 'none' }}>
-              ADD TO WISH LIST
+            <Link href="#Wishlist" sx={{ color: '#0000009e', textDecoration: 'none' }}>
+              <FavoriteIcon sx={{ display: 'inline-block', verticalAlign: 'middle' }} />
+              <Typography variant='div' sx={{ display: 'inline-block', verticalAlign: 'middle' }}>
+                ADD TO WISH LIST
+              </Typography>
             </Link>
             &nbsp;&nbsp;&nbsp;
-            <Link href="#compare" sx={{ color: 'black', textDecoration: 'none' }}>
-              ADD TO COMPARE
+            <Link href="#compare" sx={{ color: '#0000009e', textDecoration: 'none' }}>
+              <CompareIcon sx={{ display: 'inline-block', verticalAlign: 'middle' }} />
+              <Typography variant='div' sx={{ display: 'inline-block', verticalAlign: 'middle' }}>
+                ADD TO COMPARE
+              </Typography>
             </Link>
           </Box>
 
@@ -238,7 +199,7 @@ export const Product = ({ filters }) => {
       <ProductDetails
         product={product}
         activeTab={activeTab}
-        handleTabChange={handleTabChange} 
+        handleTabChange={handleTabChange}
       />
 
       <RelatedProducts

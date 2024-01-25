@@ -140,3 +140,24 @@
 .customArrowRight {
   right: 0;
 }
+
+.productname{
+  color: black;
+  text-decoration: none;
+  margin-top: 10px;
+}
+
+.productname:hover{
+  text-decoration: underline;
+}
+
+.list{
+  color: #0000009e;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.list:hover{
+  color: black;
+}
