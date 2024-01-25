@@ -95,10 +95,10 @@ export const Product = ({ filters }) => {
                   <img
                     key={index}
                     src={
-                      resolveImage(image.url) + `?width=1000&height=1240&webp=auto&color=${selectedColor}`
+                      resolveImage(image.url) + `?width=1000&height=1240&webp=auto`
                     }
-                    width={500}
-                    height={700}
+                    width={700}
+                    height={500}
                     alt={image.label}
                     loading={index === 0 ? 'eager' : 'lazy'}
                     className={styles.image}
