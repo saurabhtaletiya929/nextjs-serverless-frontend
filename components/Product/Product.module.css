@@ -159,5 +159,16 @@
 }
 
 .list:hover{
-  color: black;
+  color: #e63838;
+}
+
+.icon{
+  display: inline-block;
+  vertical-align: middle;
+}
+.icon:hover{  
+  color: #e63838;
+}
+.Paper:hover{
+  border: #808080 1px solid;
 }

@@ -28,7 +28,7 @@ export const RelatedProducts = ({ product, productUrlSuffix }) => {
 
           return (
             <Grid item key={relatedProduct.uid} xs={12} sm={6} md={4} lg={3}>
-              <Paper>
+              <Paper className={styles.Paper}>
                 <Link
                   href={productPath}
                 // as={productPath}

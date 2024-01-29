@@ -179,14 +179,14 @@ export const Product = ({ filters }) => {
 
           <Box sx={{ m: "30px 0" }}>
             <Link href="#Wishlist" sx={{ color: '#0000009e', textDecoration: 'none' }}>
-              <FavoriteIcon sx={{ display: 'inline-block', verticalAlign: 'middle' }} />
+              <FavoriteIcon className={styles.icon} />
               <Typography variant='div' sx={{ display: 'inline-block', verticalAlign: 'middle' }}>
                 ADD TO WISH LIST
               </Typography>
             </Link>
             &nbsp;&nbsp;&nbsp;
             <Link href="#compare" sx={{ color: '#0000009e', textDecoration: 'none' }}>
-              <CompareIcon sx={{ display: 'inline-block', verticalAlign: 'middle' }} />
+              <CompareIcon className={styles.icon} />
               <Typography variant='div' sx={{ display: 'inline-block', verticalAlign: 'middle' }}>
                 ADD TO COMPARE
               </Typography>
