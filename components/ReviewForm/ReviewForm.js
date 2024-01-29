@@ -12,12 +12,24 @@ const ReviewForm = () => {
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
+    handleInput('rating');
   };
+
+  const handleInput = (fieldName) => {
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+      delete newErrors[fieldName];  
+      return newErrors;
+    });
+  };  
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const newErrors = {};
+    if (!rating) {
+      newErrors.rating = 'Rating is required';
+    }
     if (!nickname.trim()) {
       newErrors.nickname = 'Nickname is required';
     }
@@ -66,16 +78,22 @@ const ReviewForm = () => {
       <Typography variant='h6'>You're reviewing:</Typography><br></br>
       <Typography className={styles.label}>Your Rating</Typography>
       <Box>
-        <InputLabel>Review</InputLabel><br></br>
+        <InputLabel className={styles.label}>Review</InputLabel><br></br>
         <RatingStars rating={rating}  onRatingChange={handleRatingChange} />
+
+        <Typography variant="caption" color="error">
+          {errors.rating}
+        </Typography>
 
         <div>
           <InputLabel className={styles.label}>Nickname</InputLabel><br></br>
           <Input
             type="text"
             value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            required
+            onChange={(e) => {
+              setNickname(e.target.value);
+              handleInput('nickname');
+            }}
             style={{ width: "30%" }}
           />
         </div>
@@ -88,8 +106,10 @@ const ReviewForm = () => {
           <Input
             type="text"
             value={summary}
-            onChange={(e) => setSummary(e.target.value)}
-            required
+            onChange={(e) => {
+              setSummary(e.target.value);
+              handleInput('summary');
+            }}
             style={{ width: "30%" }}
           />
         </div>
@@ -101,8 +121,10 @@ const ReviewForm = () => {
           <InputLabel className={styles.label}>Review</InputLabel><br></br>
           <TextField
             value={reviewText}
-            onChange={(e) => setReviewText(e.target.value)}
-            required
+            onChange={(e) => {
+              setReviewText(e.target.value);
+              handleInput('reviewText');
+            }}
             style={{ width: "30%" }}
           ></TextField>
         </div>
