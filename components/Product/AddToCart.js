@@ -5,31 +5,32 @@ import { useRouter } from 'next/router';
 import { useCart } from '~/providers/context/CartContext';
 import { useMutation } from '@apollo/client'
 
-export const AddToCart = ({ selectedColor, setColorError, selectedSize, setSizeError, quantity, setQuantityError,  }) => {
+export const AddToCart = ({ selectedColor, selectedSize, error, setError, quantity, }) => {
 
-    const router = useRouter();
+  const router = useRouter();
   const { updateCartCount, setItemAdded } = useCart();
   const [addToCartMutation] = useMutation(ADD_TO_CART_MUTATION);
 
   const handleAddToCart = async () => {
 
-    if (!selectedColor) {
-      setColorError('Please select a color.');
-    } else {
-      setColorError('');
-    }
+    if (!selectedColor) setError((prev) => ({ ...prev, color: 'Please select a color.' }));
+    else setError((prev) => ({ ...prev, color: '' }));
+
 
     if (!selectedSize) {
-      setSizeError('Please select a size.');
+      setError((prev) => ({ ...prev, size: 'Please select a size.' }));
     } else {
-      setSizeError('');
+      setError((prev) => ({ ...prev, size: '' }));
+
     }
 
     if (quantity <= 0) {
-      setQuantityError('Quantity must be greater than 0.');
+      setError((prev) => ({ ...prev, quantity: 'Quantity must be greater than 0.' }));
     } else {
-      setQuantityError('');
+      setError((prev) => ({ ...prev, quantity: '' }));
+
     }
+
 
     if (selectedColor && selectedSize && quantity > 0) {
       try {
@@ -40,7 +41,7 @@ export const AddToCart = ({ selectedColor, setColorError, selectedSize, setSizeE
         if (data && data.addProductsToCart) {
           const { cart, user_errors } = data.addProductsToCart;
 
-          if (user_errors && user_errors.length > 0) {
+          if (user_errors.length > 0) {
             console.error(user_errors);
             alert(`Failed to add item to the cart: ${user_errors[0].message}`);
           } else {
@@ -69,5 +70,5 @@ export const AddToCart = ({ selectedColor, setColorError, selectedSize, setSizeE
     }
   };
 
-    return <Button onClick={handleAddToCart}>Add To Cart</Button>
+  return <Button onClick={handleAddToCart}>Add To Cart</Button>
 }

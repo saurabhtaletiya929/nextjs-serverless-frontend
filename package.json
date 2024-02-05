@@ -21,6 +21,7 @@
     "@mui/styles": "^5.14.16",
     "graphql": "^15.8.0",
     "http-proxy-middleware": "^1.0.5",
+    "lodash": "^4.17.21",
     "next": "^14.0.0",
     "nextjs-progressbar": "^0.0.16",
     "react": "^18.2.0",

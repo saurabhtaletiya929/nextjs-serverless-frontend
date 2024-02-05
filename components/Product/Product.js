@@ -1,7 +1,6 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styles from './Product.module.css'
 import { useQuery } from '@apollo/client'
-import { resolveImage } from '~/lib/resolve-image'
 import PRODUCT_QUERY from './Product.graphql'
 import Price from '~/components/Price'
 import Head from 'next/head'
@@ -25,8 +24,41 @@ import { RelatedProducts } from './RelatedProducts'
 import { animateScroll as scroll } from 'react-scroll';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CompareIcon from '@mui/icons-material/Compare';
+import ScrollToReview from './ScrollToReview';
+import { isEmpty } from 'lodash'
+
+
 
 export const Product = ({ filters }) => {
+
+  const { loading, data } = useQuery(PRODUCT_QUERY, { variables: { filters } });
+  const [selectedColor, setSelectedColor] = useState('');
+  const [selectedSize, setSelectedSize] = useState('');
+  const [quantity, setQuantity] = useState(0);
+  const [error, setError] = useState({ color: '', size: '', quantity: '' })
+  const [activeTab, setActiveTab] = useState(0);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const sliderRef = useRef(null);
+  const [priceVariant, setPriceVariant] = useState(null);
+
+  const product = data?.products?.items[0] || [];
+
+
+  useEffect(() => {
+    if (!isEmpty(product?.configurable_options)) {
+      const size = product?.configurable_options.find(o => o.attribute_code === 'size')?.values[0]?.label || '';
+      const color = product?.configurable_options.find(o => o.attribute_code === 'color')?.values[0]?.label || '';
+
+      if (color && size) {
+        setSelectedColor(color);
+        setSelectedSize(size);
+
+        const variant = findVariant(color, size);
+        setPriceVariant(variant);
+      }
+    }
+  }, [product?.configurable_options]);
+
 
   const settings = {
     dots: true,
@@ -38,39 +70,45 @@ export const Product = ({ filters }) => {
     nextArrow: <CustomNextArrow />,
   };
 
-  const reviewFormRef = useRef(null);
-  const reviewRef = useRef(null);
-  const [selectedColor, setSelectedColor] = useState('');
-  const [selectedSize, setSelectedSize] = useState('');
-  const [quantity, setQuantity] = useState(0);
-  const [colorError, setColorError] = useState('');
-  const [sizeError, setSizeError] = useState('');
-  const [quantityError, setQuantityError] = useState('');
-  const [activeTab, setActiveTab] = useState(0);
-
-  const { loading, data } = useQuery(PRODUCT_QUERY, { variables: { filters } });
-
   if (loading && !data) return <div>⌚️ Loading...</div>;
-
-  const product = data?.products.items[0] || [];
-  console.log('product:', product);
 
   const productUrlSuffix = data?.storeConfig.product_url_suffix ?? "";
 
+
+  function findVariant(color, size) {
+    return product?.variants.find(v =>
+      v.attributes.some(a => a.code === 'color' && a.label === color) &&
+      v.attributes.some(a => a.code === 'size' && a.label === size)
+    ) || null;
+  }
+
+  const selectedVariant = findVariant(selectedColor, selectedSize);
+  const mediaGallery = selectedVariant?.product?.media_gallery || [];
+
+  const handleImageClick = (index) => {
+    setSelectedImageIndex(index);
+
+    if (sliderRef.current) {
+      sliderRef.current.slickGoTo(index);
+    }
+
+  };
+
   const handleColorChange = (e) => {
     setSelectedColor(e.target.value);
-    setColorError('');
+    setError((prev) => ({ ...prev, color: '' }));
   };
 
   const handleSizeChange = (e) => {
     setSelectedSize(e.target.value);
-    setSizeError('');
+    setError((prev) => ({ ...prev, size: '' }));
+
   };
 
   const handleQtyChange = (e) => {
     const value = parseInt(e.target.value, 10) || '';
     setQuantity(value);
-    setQuantityError('');
+    setError((prev) => ({ ...prev, quantity: '' }));
   };
 
   const handleTabChange = (tab) => {
@@ -87,61 +125,52 @@ export const Product = ({ filters }) => {
       <Grid container spacing={2} sx={{ m: '50px 0' }}>
         <Grid item xs={12} md={6} className={styles.sliderContainer}>
 
-          <Slider {...settings} className={styles.slider}>
-            {product.media_gallery
-              .filter((media) => media.type === 'ProductImage')
-              .map((image, index) => (
-                <div className={styles.slide}>
-                  <img
-                    key={index}
-                    src={
-                      resolveImage(image.url) + `?width=1000&height=1240&webp=auto`
-                    }
-                    width={700}
-                    height={500}
-                    alt={image.label}
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                    className={styles.image}
-                  />
-                </div>
-              ))}
+          <Slider {...settings} ref={sliderRef} className={styles.slider}>
+            {mediaGallery.map((image, index) => (
+              <div
+                className={styles.slide}
+                key={index}>
+                <img
+                  src={`${image.url}?width=500&height=620&webp=auto`}
+                  width={700}
+                  height={500}
+                  alt={image.label}
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  className={styles.image}
+                />
+              </div>
+            ))}
           </Slider>
+
+          {mediaGallery.map((image, index) => (
+            <div
+              key={index}
+              onClick={() => handleImageClick(index)}
+              className={`${styles.slide} ${index === selectedImageIndex ? styles.active : ''}`}
+            >
+              <img
+                src={`${image.url}?width=500&height=620&webp=auto`}
+                width={100}
+                height={124}
+                alt={image.label}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                className={styles.image}
+              />
+            </div>
+          ))}
+
         </Grid>
         <Grid item xs={12} md={6}>
           <Typography variant='h4' sx={{ p: "10px 0" }}>{product.name}</Typography>
-          <Box sx={{ margin: "20px 0" }}>
-            {product.reviews.items && product.reviews.items.length > 0 ? (
-              <>
-                <Link href="#review" onClick={() => {
-                  setActiveTab(2);
-                  reviewRef.current?.scrollIntoView({ behavior: 'smooth' });
-                }}>
-                  Review
-                </Link>
-                &nbsp;&nbsp;&nbsp;
-                <Link href="#addyourreview" onClick={() => {
-                  setActiveTab(2);
-                  reviewFormRef.current?.scrollIntoView({ behavior: 'smooth' });
-                }}>
-                  Add Your Review
-                </Link>
-              </>
-            ) : (
-              <Link href="#addyourreview" onClick={() => {
-                setActiveTab(2);
-                reviewFormRef.current?.scrollIntoView({ behavior: 'smooth' });
-              }}>
-                Be the First Reviewer
-              </Link>
-            )}
-          </Box>
+
+          <ScrollToReview product={product} setActiveTab={setActiveTab} />
 
           <Box>
             <Grid container spacing={2} >
               <Grid item xs={6}>
                 <div>
                   <Typography>As low as</Typography>
-                  <Typography className={styles.price}><Price {...product.price_range} /></Typography>
+                  <Typography className={styles.price}><Price {...(priceVariant ? selectedVariant.product.price_range : product.price_range)} /></Typography>
                 </div>
               </Grid>
               <Grid item xs={6}>
@@ -156,25 +185,23 @@ export const Product = ({ filters }) => {
             product={product}
             selectedColor={selectedColor}
             handleColorChange={handleColorChange}
-            colorError={colorError}
+            error={error}
             selectedSize={selectedSize}
             handleSizeChange={handleSizeChange}
-            sizeError={sizeError}
           />
 
           <QuantityField
             quantity={quantity}
             handleQtyChange={handleQtyChange}
-            quantityError={quantityError}
+            error={error}
           />
 
           <AddToCart
             selectedColor={selectedColor}
             selectedSize={selectedSize}
             quantity={quantity}
-            setColorError={setColorError}
-            setSizeError={setSizeError}
-            setQuantityError={setQuantityError}
+            error={error}
+            setError={setError}
           />
 
           <Box sx={{ m: "30px 0" }}>

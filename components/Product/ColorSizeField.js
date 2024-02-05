@@ -14,7 +14,7 @@ export const ColorSizeField = ({ product, selectedColor, handleColorChange, colo
         <Grid container spacing={2}>
             {product.configurable_options.map((attribute) => (
               <Grid item xs={6} key={attribute.id}>
-                <Typography>{attribute.label}:</Typography>
+                {/* <Typography>{attribute.label}:</Typography> */}
                 <FormControl sx={{ minWidth: 90 }} size="small">
                   <InputLabel id={`${attribute.attribute_code}-label`}>
                     {attribute.label}

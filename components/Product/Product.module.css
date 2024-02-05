@@ -114,15 +114,14 @@
 }
 
 .slide {
-  display: flex;
+  display: inline-block !important;
   justify-content: center;
+  margin: 10px;
 }
 
-/* .image {
-  width: 100%; 
-  max-height: 100%; 
-  object-fit: cover;
-} */
+.active{
+  border: 1px solid black;
+}
 
 .customArrow {
   position: absolute;

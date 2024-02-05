@@ -8,7 +8,7 @@ export const Price = ({ minimum_price, ...rest }) => {
     currency,
   })
 
-  const discount = minimum_price.discount.amount_off
+  const discount = minimum_price.discount?.amount_off
     ? minimum_price.discount.amount_off.toLocaleString('en-US', {
         style: 'currency',
         currency,

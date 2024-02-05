@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import styles from './Product.module.css'
-import ReviewForm from '../ReviewForm/ReviewForm'
+import ReviewForm from './ReviewForm'
 import {
     Typography,
     Box,
@@ -18,12 +18,7 @@ export const ProductDetails = ({ product, activeTab, handleTabChange }) => {
 
     const reviewFormRef = useRef(null);
     const reviewRef = useRef(null);
-    const [value, setValue] = useState(0);
-
-    // const handleChange = (event, newValue) => {
-    //     setValue(newValue);
-    //     scroll.scrollToTop();
-    // };
+    const [successMessage, setSuccessMessage] = useState(null);
 
     const RatingStars = ({ rating }) => {
         return (
@@ -31,6 +26,14 @@ export const ProductDetails = ({ product, activeTab, handleTabChange }) => {
                 <Rating value={rating} readOnly />
             </div>
         )
+    }
+
+    const handleReviewFormSubmit = () => {
+        setSuccessMessage('You submitted your review successfully!.');
+    };
+
+    const handleCloseSuccessMessage = () => {
+        setSuccessMessage(null)
     }
 
     return (
@@ -58,7 +61,7 @@ export const ProductDetails = ({ product, activeTab, handleTabChange }) => {
                                 <Typography>Style:</Typography>
                             </Grid>
                             <Grid item sm={2}>
-                                <Typography>Value</Typography>
+                                <Typography>{product.style_general}</Typography>
                             </Grid>
                         </Grid>
                         <Grid container spacing={2} >
@@ -66,7 +69,7 @@ export const ProductDetails = ({ product, activeTab, handleTabChange }) => {
                                 <Typography>Material:</Typography>
                             </Grid>
                             <Grid item sm={2}>
-                                <Typography>Value</Typography>
+                                <Typography>{product.material}</Typography>
                             </Grid>
                         </Grid>
                         <Grid container spacing={2} >
@@ -74,7 +77,7 @@ export const ProductDetails = ({ product, activeTab, handleTabChange }) => {
                                 <Typography>Pattern:</Typography>
                             </Grid>
                             <Grid item sm={2}>
-                                <Typography>Value</Typography>
+                                <Typography>{product.pattern}</Typography>
                             </Grid>
                         </Grid>
                         <Grid container spacing={2} >
@@ -82,7 +85,7 @@ export const ProductDetails = ({ product, activeTab, handleTabChange }) => {
                                 <Typography>Climate:</Typography>
                             </Grid>
                             <Grid item sm={2}>
-                                <Typography>Value</Typography>
+                                <Typography>{product.climate}</Typography>
                             </Grid>
                         </Grid>
                     </Container>
@@ -114,7 +117,18 @@ export const ProductDetails = ({ product, activeTab, handleTabChange }) => {
                             )}
                         </Box>
                         <Box id="addyourreview" ref={reviewFormRef}>
-                            <ReviewForm />
+                            {successMessage && (
+                                <Box sx={{ backgroundColor: '#d2ebd2', color: 'black', padding: '10px', marginTop: '20px', fontSize: '20px' }}>
+                                    {successMessage}
+                                    <span
+                                        style={{ cursor: 'pointer', marginLeft: '990px', color: 'green' }}
+                                        onClick={handleCloseSuccessMessage}
+                                    >
+                                        &#10006; 
+                                    </span>
+                                </Box>
+                            )}
+                            <ReviewForm onSubmitSuccess={handleReviewFormSubmit} product={product} />
                         </Box>
                     </Container>
                 )}

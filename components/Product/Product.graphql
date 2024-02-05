@@ -23,6 +23,10 @@ query ProductQuery($filters: ProductAttributeFilterInput!) {
       categories {
         id
       }
+      climate
+      material
+      style_general
+      pattern
       ... on ConfigurableProduct {
         configurable_options {
           id
@@ -34,6 +38,9 @@ query ProductQuery($filters: ProductAttributeFilterInput!) {
           values {
             value_index
             label
+            default_label
+            store_label
+            use_default_value
           }
           product_id
         }
@@ -42,6 +49,10 @@ query ProductQuery($filters: ProductAttributeFilterInput!) {
             id
             name
             sku
+            media_gallery{
+              url
+              label
+            }
             attribute_set_id
             ... on PhysicalProductInterface {
               weight

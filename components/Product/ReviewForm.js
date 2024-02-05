@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import styles from '../ReviewForm/ReviewForm.module.css';
+import styles from './ReviewForm.module.css';
 import { Typography, Box, InputLabel, FormControl, Input, TextField, Container  } from '@mui/material';
-import Button from '~/components/Button'
+import Button from '~/components/Button';
+import { useMutation } from "@apollo/client";;
+import { REVIEW_MUTATION } from "~/components/Customer/FormSubmit/CustomerFormSubmitGraphql";
 
-const ReviewForm = () => {
+const ReviewForm = ({onSubmitSuccess, product}) => {
+  console.log(product,"product");
   const [rating, setRating] = useState(0);
   const [nickname, setNickname] = useState('');
   const [summary, setSummary] = useState('');
@@ -23,9 +26,13 @@ const ReviewForm = () => {
     });
   };  
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
 
+const [SubmitReviewForm, { error }] = useMutation(REVIEW_MUTATION);
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
     const newErrors = {};
     if (!rating) {
       newErrors.rating = 'Rating is required';
@@ -43,14 +50,40 @@ const ReviewForm = () => {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
-      console.log('Form submitted:', { rating, nickname, summary, reviewText });
+      const { loading, data } = await SubmitReviewForm({
+        variables: {
+            sku: product?.sku,
+            nickname: nickname,
+            ratings: [],
+            summary: summary,
+            text: reviewText,
+        },
+      });
+
+      if (loading) {
+        console.log('Mutation loading');
+        return;
+      }
+
+      if (error) {
+        console.log('Error occurred');
+        return;
+      }
+
+      onSubmitSuccess();
+      // alert('Form submitted');
+
       setRating(0);
       setNickname('');
       setSummary('');
       setReviewText('');
       setErrors({});
     }
-  };
+  } catch (error) {
+    console.error('An unexpected error occurred:', error);
+  }
+};
+
 
   const RatingStars = ({ rating, onRatingChange }) => {
     const stars = Array.from({ length: 5 }, (_, index) => index + 1);

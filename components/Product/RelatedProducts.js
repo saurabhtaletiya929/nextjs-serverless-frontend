@@ -7,8 +7,6 @@ import {
   Link,
   Grid,
   Paper,
-  Container,
-  IconButton
 } from '@mui/material'
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import CompareIcon from '@mui/icons-material/Compare';
