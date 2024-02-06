@@ -40,9 +40,8 @@ export const ProductDetails = ({ product, activeTab, handleTabChange }) => {
         <Paper sx={{ m: '50px 0' }}>
             <Box sx={{ border: 1, borderColor: 'divider' }}>
                 <Tabs value={activeTab} onChange={(event, newValue) => handleTabChange(newValue)} aria-label="basic tabs example" sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tab label="Detail" />
-                    <Tab label="More Information" />
-                    <Tab label="Review" />
+                    <Tab sx={{fontSize: '20px'}} label="Detail" />
+                    <Tab sx={{fontSize: '20px'}} label="Review" />
                 </Tabs>
                 {activeTab === 0 && (
                     <Container maxWidth="xl">
@@ -54,43 +53,8 @@ export const ProductDetails = ({ product, activeTab, handleTabChange }) => {
                         )}
                     </Container>
                 )}
+                
                 {activeTab === 1 && (
-                    <Container maxWidth="xl" sx={{ m: "20px 0" }}>
-                        <Grid container spacing={2} >
-                            <Grid item sm={2}>
-                                <Typography>Style:</Typography>
-                            </Grid>
-                            <Grid item sm={2}>
-                                <Typography>{product.style_general}</Typography>
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={2} >
-                            <Grid item sm={2}>
-                                <Typography>Material:</Typography>
-                            </Grid>
-                            <Grid item sm={2}>
-                                <Typography>{product.material}</Typography>
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={2} >
-                            <Grid item sm={2}>
-                                <Typography>Pattern:</Typography>
-                            </Grid>
-                            <Grid item sm={2}>
-                                <Typography>{product.pattern}</Typography>
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={2} >
-                            <Grid item sm={2}>
-                                <Typography>Climate:</Typography>
-                            </Grid>
-                            <Grid item sm={2}>
-                                <Typography>{product.climate}</Typography>
-                            </Grid>
-                        </Grid>
-                    </Container>
-                )}
-                {activeTab === 2 && (
                     <Container maxWidth="xl">
                         <Box id="review" ref={reviewRef}>
                             <Typography variant='h5' sx={{ m: "20px" }}>Customer Reviews</Typography>

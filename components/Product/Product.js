@@ -34,7 +34,7 @@ export const Product = ({ filters }) => {
   const { loading, data } = useQuery(PRODUCT_QUERY, { variables: { filters } });
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState({ color: '', size: '', quantity: '' })
   const [activeTab, setActiveTab] = useState(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -59,15 +59,32 @@ export const Product = ({ filters }) => {
     }
   }, [product?.configurable_options]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (sliderRef.current) {
+        // const newIndex = (selectedImageIndex + 1) % mediaGallery.length;
+        // setSelectedImageIndex(newIndex);
+        sliderRef.current.slickNext();
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [selectedImageIndex]);
+
 
   const settings = {
     dots: true,
     infinite: true,
-    speed: 500,
+    // speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    autoplay: true, 
+    autoplaySpeed: 5000, 
     prevArrow: <CustomPrevArrow />,
     nextArrow: <CustomNextArrow />,
+    beforeChange: (current, next) => {
+      setSelectedImageIndex(next);
+    }
   };
 
   if (loading && !data) return <div>⌚️ Loading...</div>;
@@ -113,35 +130,18 @@ export const Product = ({ filters }) => {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-    scroll.scrollToTop();
+    // scroll.scrollToTop();
   };
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="xl" sx={{ width: '100%', m: '0' }}>
       <Head>
         <title>{product.name}</title>
       </Head>
 
       <Grid container spacing={2} sx={{ m: '50px 0' }}>
-        <Grid item xs={12} md={6} className={styles.sliderContainer}>
 
-          <Slider {...settings} ref={sliderRef} className={styles.slider}>
-            {mediaGallery.map((image, index) => (
-              <div
-                className={styles.slide}
-                key={index}>
-                <img
-                  src={`${image.url}?width=500&height=620&webp=auto`}
-                  width={700}
-                  height={500}
-                  alt={image.label}
-                  loading={index === 0 ? 'eager' : 'lazy'}
-                  className={styles.image}
-                />
-              </div>
-            ))}
-          </Slider>
-
+        <Grid item xs={12} md={1}>
           {mediaGallery.map((image, index) => (
             <div
               key={index}
@@ -151,36 +151,73 @@ export const Product = ({ filters }) => {
               <img
                 src={`${image.url}?width=500&height=620&webp=auto`}
                 width={100}
-                height={124}
+                height={125}
                 alt={image.label}
                 loading={index === 0 ? 'eager' : 'lazy'}
-                className={styles.image}
               />
             </div>
           ))}
-
         </Grid>
-        <Grid item xs={12} md={6}>
-          <Typography variant='h4' sx={{ p: "10px 0" }}>{product.name}</Typography>
+        <Grid item xs={12} md={7} className={styles.sliderContainer}>
+          <Slider {...settings} ref={sliderRef} className={styles.slider}>
+            {mediaGallery.map((image, index) => (
+              <div
+                className={styles.slide}
+                key={index}
+              >
+                <img
+                  src={`${image.url}?width=500&height=620&webp=auto`}
+                  width={800}
+                  height={1000}
+                  alt={image.label}
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  className={styles.image}
+                />
+              </div>
+            ))}
+          </Slider>
+        </Grid>
+
+        <Grid item xs={12} md={4} className={styles.productdetail}>
+          <Typography variant='h4' sx={{ p: "10px 0", color: '#333' }}>
+            {product.name}
+          </Typography>
 
           <ScrollToReview product={product} setActiveTab={setActiveTab} />
 
-          <Box>
-            <Grid container spacing={2} >
+          <Box className={styles.productdescription}>
+            {product.short_description?.html && (
+              <div
+                className={styles.shortdescription}
+                dangerouslySetInnerHTML={{ __html: product.short_description.html }}
+              />
+            )}
+          </Box>
+
+          <Box sx={{ my: 2 }}>
+            <Grid container spacing={2}>
               <Grid item xs={6}>
-                <div>
-                  <Typography>As low as</Typography>
-                  <Typography className={styles.price}><Price {...(priceVariant ? selectedVariant.product.price_range : product.price_range)} /></Typography>
-                </div>
+                <Typography variant='body2' sx={{ color: '#555', fontWeight: '900' }}>
+                  AS LOW AS
+                </Typography>
+                <Typography className={styles.price}>
+                  <Price {...(priceVariant ? selectedVariant.product.price_range : product.price_range)} />
+                </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography>IN STOCK</Typography>
-                <Typography className={styles.sku}>SKU. {product.sku}</Typography>
+                <Typography variant='body2' sx={{ color: '#555', fontWeight: '900' }}>
+                  IN STOCK
+                </Typography>
+                <Typography className={styles.sku} sx={{ color: '#777' }}>
+                  SKU. {product.sku}
+                </Typography>
               </Grid>
             </Grid>
           </Box>
 
-          <Box sx={{ borderBottom: 1, borderColor: 'black', m: '0 270px 30px 0' }}></Box>
+
+          {/* <Box sx={{ borderBottom: 1, borderColor: '#ddd', m: '0 270px 30px 0' }}></Box> */}
+
           <ColorSizeField
             product={product}
             selectedColor={selectedColor}
@@ -190,35 +227,47 @@ export const Product = ({ filters }) => {
             handleSizeChange={handleSizeChange}
           />
 
-          <QuantityField
-            quantity={quantity}
-            handleQtyChange={handleQtyChange}
-            error={error}
-          />
+          <QuantityField quantity={quantity} handleQtyChange={handleQtyChange} error={error} />
 
-          <AddToCart
-            selectedColor={selectedColor}
-            selectedSize={selectedSize}
-            quantity={quantity}
-            error={error}
-            setError={setError}
-          />
 
-          <Box sx={{ m: "30px 0" }}>
-            <Link href="#Wishlist" sx={{ color: '#0000009e', textDecoration: 'none' }}>
-              <FavoriteIcon className={styles.icon} />
-              <Typography variant='div' sx={{ display: 'inline-block', verticalAlign: 'middle' }}>
-                ADD TO WISH LIST
-              </Typography>
-            </Link>
-            &nbsp;&nbsp;&nbsp;
-            <Link href="#compare" sx={{ color: '#0000009e', textDecoration: 'none' }}>
-              <CompareIcon className={styles.icon} />
-              <Typography variant='div' sx={{ display: 'inline-block', verticalAlign: 'middle' }}>
-                ADD TO COMPARE
-              </Typography>
-            </Link>
-          </Box>
+          {/* <AddToCart selectedColor={selectedColor} selectedSize={selectedSize} quantity={quantity} error={error} setError={setError} /> */}
+
+          {/* <Box sx={{ m: "40px 0" }}> */}
+          <Grid container spacing={2}>
+            <Grid item xs={6} sx={{ marginBottom: '40px' }}>
+              <AddToCart selectedColor={selectedColor} selectedSize={selectedSize} quantity={quantity} error={error} setError={setError} />
+            </Grid>
+            <Grid item xs={6}>
+              <IconButton href="#Wishlist" className={styles.additem}>
+                <FavoriteIcon className={styles.icon} />
+                <Typography variant='div' className={styles.addlist}>
+                  ADD TO WISH LIST
+                </Typography>
+              </IconButton>
+            </Grid>
+          </Grid>
+          {/* </Box> */}
+
+          <Typography sx={{ fontSize: '18px', fontWeight: '600', marginBottom: '20px' }}>MORE INFORMATION</Typography>
+          <Container maxWidth="xl" sx={{ marginBottom: "20px" }}>
+            <Box className={styles.information}>
+              <Typography className={styles.info}>Style:</Typography>
+              <Typography sx={{ fontSize: '19px' }}>{product.style_general}</Typography>
+            </Box>
+            <Box className={styles.information}>
+              <Typography className={styles.info}>Material:</Typography>
+              <Typography sx={{ fontSize: '19px' }}>{product.material}</Typography>
+            </Box>
+            <Box className={styles.information}>
+              <Typography className={styles.info}>Pattern:</Typography>
+              <Typography sx={{ fontSize: '19px' }}>{product.pattern}</Typography>
+            </Box>
+            <Box className={styles.information}>
+              <Typography className={styles.info}>Climate:</Typography>
+              <Typography sx={{ fontSize: '19px' }}>{product.climate}</Typography>
+            </Box>
+          </Container>
+
 
         </Grid>
       </Grid>
@@ -232,6 +281,11 @@ export const Product = ({ filters }) => {
       <RelatedProducts
         product={product}
         productUrlSuffix={productUrlSuffix}
+        selectedColor={selectedColor}
+        selectedSize={selectedSize}
+        quantity={quantity}
+        error={error}
+        setError={setError}
       />
 
     </Container>

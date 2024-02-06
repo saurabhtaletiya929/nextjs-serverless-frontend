@@ -16,27 +16,56 @@
   height: auto;
 }
 
-.details {
-  display: grid;
-  grid-gap: 16px;
-  grid-auto-rows: max-content;
-  padding: 0 10px;
+.productdetail {
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.details > h2 {
+.details>h2 {
   font-size: 23px;
+  color: #333;
 }
 
 .sku {
-  color: #999;
+  color: #777;
 }
 
-.price{
+.price {
   font-size: 30px;
   font-weight: 900;
+  color: black;
 }
-.pricestyle{
+
+.additem{
+  /* color: #1976d2;
   text-decoration: none;
+  background-color: #8080804f;
+  padding: 10px; */
+
+  background-color: #808080c5;
+  border-radius: 10px;
+  font-weight: 900;
+  /* border-radius: 10px; */
+}
+
+
+.addlist{
+  display: inline-block;
+  vertical-align: middle;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.addlist:hover{
+  color: #1976d2;
+}
+
+.pricestyle {
+  text-decoration: none;
+  color: #e63838;
 }
 
 .buttonWrapper {
@@ -45,10 +74,26 @@
 
 .buttonWrapper button {
   width: 100%;
+  background-color: #e63838;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
 .description {
-  font-size: 14px;
+  font-size: 19px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.productdescription{
+  margin: 40px 0;
+}
+.shortdescription{
+  color: black;
+  font-size: 19px;
   line-height: 1.5;
 }
 
@@ -59,6 +104,7 @@
 .description ul,
 .description ol {
   list-style-position: inside;
+  color: #333;
 }
 
 .description ul {
@@ -74,52 +120,20 @@
   margin-left: 6px;
 }
 
-/* Tablet */
-@media (min-width: 600px) {
-  .product {
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 20px;
-    align-items: center;
-  }
-
-  .gallery {
-    overflow-x: auto;
-    scroll-snap-type: unset;
-    display: grid;
-    grid-auto-rows: max-content;
-    grid-gap: 10px;
-  }
-
-  .content {
-    align-self: flex-start;
-  }
-
-  .detailsWrapper {
-    position: sticky;
-    top: 20px;
-    min-height: 90vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-}
-
 .sliderContainer {
   position: relative;
+  padding: 0 27px;
 }
 
 .slider {
   width: 100%;
-  margin: 16px 0; 
 }
 
 .slide {
-  display: inline-block !important;
-  justify-content: center;
-  margin: 10px;
+  margin-top: 15px;
 }
 
-.active{
+.active {
   border: 1px solid black;
 }
 
@@ -128,7 +142,12 @@
   top: 50%;
   transform: translateY(-50%);
   background-color: #fbfbfc;
-  color: #0f0d0d; 
+  color: #0f0d0d;
+  border: 1px solid #ddd;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
 }
 
 .customArrowLeft {
@@ -140,34 +159,132 @@
   right: 0;
 }
 
-.productname{
-  color: black;
+.productname {
+  color: #333;
   text-decoration: none;
   margin-top: 10px;
 }
 
-.productname:hover{
+.productname:hover {
   text-decoration: underline;
+  color: #1976d2;
 }
 
-.list{
+.list {
   color: #0000009e;
   text-decoration: none;
   display: flex;
   align-items: center;
 }
 
-.list:hover{
+.list:hover {
   color: #e63838;
 }
 
-.icon{
+.icon {
   display: inline-block;
   vertical-align: middle;
+  color: white;
 }
-.icon:hover{  
+
+.icon:hover {
   color: #e63838;
 }
-.Paper:hover{
+
+/* .Paper:hover {
   border: #808080 1px solid;
+} */
+
+.button{
+  background-color: #1976d2;
+  color: #fff;
+  border-radius: 10px;
+  width: 100%;
+  font-weight: 900;
+}
+
+.button:hover{
+  background-color: black;
+  color: white;
+  font-weight: 900;
+}
+
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modalContent {
+  max-width: 90%;
+  max-height: 90%;
+  overflow: hidden;
+}
+
+
+.review{
+  font-size: 19px;
+  text-decoration: none;
+}
+
+.review:hover{
+  color: #1a538b;
+  text-decoration: underline;
+}
+
+.productContainer {
+  position: relative;
+}
+
+.Paper {
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.productContainer:hover .Paper {
+  border: #808080 3px solid;
+  border-radius: 10px;
+}
+
+.addToCartButton {
+  bottom: 10px;
+  opacity: 0;
+  margin: 30px 0 0 0;
+}
+
+.productContainer:hover .addToCartButton {
+  opacity: 1;
+}
+
+.information{
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 19px;
+}
+
+.info{
+  font-size: 19px;
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+@keyframes slideImages {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+.hover-animation {
+  transition: transform 0.5s;
+}
+
+.ratings{
+  background-color: green;
+  width: 20%;
+  color: black;
+  text-align: center;
+  margin: 0;
 }

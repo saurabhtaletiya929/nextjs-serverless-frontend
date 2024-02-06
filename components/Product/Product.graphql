@@ -41,6 +41,9 @@ query ProductQuery($filters: ProductAttributeFilterInput!) {
             default_label
             store_label
             use_default_value
+            swatch_data{
+              value
+            }
           }
           product_id
         }
@@ -73,6 +76,7 @@ query ProductQuery($filters: ProductAttributeFilterInput!) {
             value_index
           }
         }
+        review_count
         reviews{
         items{
           summary
@@ -86,6 +90,9 @@ query ProductQuery($filters: ProductAttributeFilterInput!) {
           }
         }
       }
+      short_description{
+          html
+        }
       description {
         html
       }

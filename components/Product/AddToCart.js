@@ -4,6 +4,9 @@ import { ADD_TO_CART_MUTATION } from '~/components/Checkout/Cart/Cartgraphql';
 import { useRouter } from 'next/router';
 import { useCart } from '~/providers/context/CartContext';
 import { useMutation } from '@apollo/client'
+import { Box, IconButton } from '@mui/material';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import styles from './Product.module.css';
 
 export const AddToCart = ({ selectedColor, selectedSize, error, setError, quantity, }) => {
 
@@ -70,5 +73,10 @@ export const AddToCart = ({ selectedColor, selectedSize, error, setError, quanti
     }
   };
 
-  return <Button onClick={handleAddToCart}>Add To Cart</Button>
+  return (
+    <IconButton onClick={handleAddToCart} className={styles.button}>
+      <AddShoppingCartIcon />
+      <Box sx={{fontSize: '18px'}}>ADD TO CART</Box>
+    </IconButton>
+  );
 }
