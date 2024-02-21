@@ -75,8 +75,8 @@ export const AddToCart = ({ selectedColor, selectedSize, error, setError, quanti
 
   return (
     <IconButton onClick={handleAddToCart} className={styles.button}>
-      <AddShoppingCartIcon />
-      <Box sx={{fontSize: '18px'}}>ADD TO CART</Box>
+      <AddShoppingCartIcon sx={{marginRight: '15px'}}/>
+      <Box sx={{fontSize: '17px'}}>ADD TO CART</Box>
     </IconButton>
   );
 }

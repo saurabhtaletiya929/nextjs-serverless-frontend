@@ -20,6 +20,8 @@ export const Category = ({ filters }) => {
 
   const category = data.categoryList[0];
 
+  console.log('category', category);
+
   const categoryUrlSuffix = data.storeConfig.category_url_suffix ?? "";
 
   const backUrl =
@@ -61,7 +63,6 @@ export const Category = ({ filters }) => {
               </ul>
             </nav>
           )}
-
           <Products filters={{ category_id: { eq: category.id } }} />
         </>
       </div>

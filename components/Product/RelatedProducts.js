@@ -14,12 +14,12 @@ import styles from './Product.module.css'
 import { AddToCart } from "./AddToCart";
 
 
-export const RelatedProducts = ({ product, productUrlSuffix, selectedColor, selectedSize, quantity, error, setError }) => {
+export const RelatedProducts = ({ product, productUrlSuffix, selectedColor, selectedSize, quantity, error, setError, isProductWishlisted, toggleWishlist }) => {
   return (
     <Box sx={{ m: '50px 0' }}>
       <Typography sx={{ fontSize: '22px', m: '30px 0' }}>We found other products you might like!</Typography>
       <Grid container spacing={2}>
-        {product.related_products.map((relatedProduct) => {
+        {product.related_products?.map((relatedProduct) => {
 
           const productPath = `/${relatedProduct.url_key + productUrlSuffix}`;
 
@@ -50,12 +50,13 @@ export const RelatedProducts = ({ product, productUrlSuffix, selectedColor, sele
                   </Link>
                   <Typography>As low as <Price {...product.price_range} /></Typography>
                   <Box sx={{ marginTop: '20px', display: 'flex' }}>
-                    <Link href="#Wishlist" className={styles.list}>
-                      <FavoriteIcon sx={{ marginRight: '5px' }} />
+                    <Link href="#Wishlist" className={styles.list} onClick={() => toggleWishlist(product.id)}>
+                      {/* <FavoriteIcon sx={{ marginRight: '5px' }} className={`${styles.icon} ${isWishlisted ? styles.wishlisted : ''}`} /> */}
+                      <FavoriteIcon sx={{ marginRight: '5px' }} className={`${styles.icon} ${isProductWishlisted(product.id) ? styles.iconwishlisted : ''}`} />
                     </Link>
-                    <Link href="#compare" className={styles.list}>
+                    {/* <Link href="#compare" className={styles.list}>
                       <CompareIcon sx={{ marginRight: '5px' }} />
-                    </Link>
+                    </Link> */}
                   </Box>
 
                   <div className={styles.addToCartButton}>
