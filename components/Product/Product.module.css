@@ -1,3 +1,4 @@
+
 .product {
   display: grid;
   grid-gap: 20px;
@@ -17,15 +18,15 @@
 }
 
 .productdetail {
-  background-color: #f8f8f8;
-  padding: 20px;
+  /* background-color: #f8f8f8; */
+  /* padding: 20px; */
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
 }
 
 .details>h2 {
   font-size: 23px;
-  color: #333;
+  color: #777;
 }
 
 .sku {
@@ -35,32 +36,7 @@
 .price {
   font-size: 30px;
   font-weight: 900;
-  color: black;
-}
-
-.additem{
-  /* color: #1976d2;
-  text-decoration: none;
-  background-color: #8080804f;
-  padding: 10px; */
-
-  background-color: #808080c5;
-  border-radius: 10px;
-  font-weight: 900;
-  /* border-radius: 10px; */
-}
-
-
-.addlist{
-  display: inline-block;
-  vertical-align: middle;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 900;
-}
-
-.addlist:hover{
-  color: #1976d2;
+  color: #c96;
 }
 
 .pricestyle {
@@ -75,7 +51,7 @@
 .buttonWrapper button {
   width: 100%;
   background-color: #e63838;
-  color: #fff;
+  color: #777;
   border: none;
   padding: 10px;
   cursor: pointer;
@@ -83,16 +59,17 @@
 }
 
 .description {
-  font-size: 19px;
+  font-size: 15px;
   line-height: 1.5;
-  color: #333;
+  color: #777;
 }
 
-.productdescription{
-  margin: 40px 0;
+.productdescription {
+  margin: 20px 0;
 }
-.shortdescription{
-  color: black;
+
+.shortdescription {
+  color: #777;
   font-size: 19px;
   line-height: 1.5;
 }
@@ -104,7 +81,7 @@
 .description ul,
 .description ol {
   list-style-position: inside;
-  color: #333;
+  color: #777;
 }
 
 .description ul {
@@ -126,11 +103,48 @@
 }
 
 .slider {
-  width: 100%;
+  width: 80%;
+  height: auto;
 }
 
 .slide {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease; 
   margin-top: 15px;
+  /* padding: 10px 10px 0 0; */
+}
+.hovered {
+  transform: scale(1.1); 
+}
+
+.modalContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  background-color: inherit;
+  overflow: auto;
+}
+
+.closeIcon {
+  position: inherit;
+  top: 10px;
+  right: 10px;
+  color: white;
+  cursor: pointer;
+}
+
+.modalImage {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  cursor: pointer;
 }
 
 .active {
@@ -142,7 +156,7 @@
   top: 50%;
   transform: translateY(-50%);
   background-color: #fbfbfc;
-  color: #0f0d0d;
+  color: #777;
   border: 1px solid #ddd;
   padding: 8px;
   border-radius: 50%;
@@ -167,11 +181,11 @@
 
 .productname:hover {
   text-decoration: underline;
-  color: #1976d2;
+  color: #c96;
 }
 
 .list {
-  color: #0000009e;
+  color: #777;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -181,32 +195,67 @@
   color: #e63838;
 }
 
-.icon {
-  display: inline-block;
-  vertical-align: middle;
-  color: white;
-}
-
-.icon:hover {
-  color: #e63838;
-}
 
 /* .Paper:hover {
   border: #808080 1px solid;
 } */
 
-.button{
-  background-color: #1976d2;
-  color: #fff;
-  border-radius: 10px;
+.button {
+  background-color: transparent;
+  color: #c96;
+  border: solid 1px #c96;
+  border-radius: 1px;
   width: 100%;
-  font-weight: 900;
 }
 
-.button:hover{
-  background-color: black;
+.button:hover {
+  background-color: #c96;
   color: white;
-  font-weight: 900;
+}
+
+
+.additem {
+  /* background-color: #80808040; */
+  /* border-radius: 10px; */
+  border: none;
+  width: 100%;
+  color: #777;
+}
+
+.additem:hover{
+  color: #c96;
+  background: none;
+}
+
+.addlist {
+  display: inline-block;
+  vertical-align: middle;
+  /* color: #fff; */
+  font-size: 16px;
+}
+
+/* .addlist:hover {
+  color: #1976d2;
+} */
+
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+  color: #c96;
+  /* color: white; */
+}
+
+.iconwishlisted {
+  color: red;
+}
+
+.wishlisted{
+  color: #c96;
+}
+
+.icon:hover {
+  color: #e63838;
 }
 
 .modal {
@@ -214,6 +263,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .modalContent {
   max-width: 90%;
   max-height: 90%;
@@ -221,14 +271,13 @@
 }
 
 
-.review{
+.review {
   font-size: 19px;
   text-decoration: none;
 }
 
-.review:hover{
+.review:hover {
   color: #1a538b;
-  text-decoration: underline;
 }
 
 .productContainer {
@@ -241,7 +290,7 @@
 }
 
 .productContainer:hover .Paper {
-  border: #808080 3px solid;
+  border: #c96 3px solid;
   border-radius: 10px;
 }
 
@@ -255,36 +304,118 @@
   opacity: 1;
 }
 
-.information{
+.information {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
   font-size: 19px;
 }
 
-.info{
+.info {
   font-size: 19px;
   font-weight: 600;
   margin-right: 10px;
 }
 
-@keyframes slideImages {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.05);
-  }
+.ratings {
+  display: flex;
+  justify-content: center;
+  background-color: #2d952d;
+  width: 100%;
+  color: white;
+  border-radius: 7px;
+  padding: 5px;
 }
 
-.hover-animation {
-  transition: transform 0.5s;
+.lessThanThree{
+  background-color: red;
 }
 
-.ratings{
-  background-color: green;
-  width: 20%;
-  color: black;
-  text-align: center;
-  margin: 0;
+.image{
+  margin: 0 100px;
+}
+
+
+.linkContainer {
+  position: relative;
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.reviewBarContainer {
+  position: absolute; 
+  top: 100%; 
+  left: 0;
+  z-index: 999; 
+  background-color: white;
+  border: 1px solid #c96;
+  padding: 10px; 
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); 
+  display: none; 
+}
+
+.linkContainer:hover .reviewBarContainer {
+  display: block;
+  width: 100%;
+}
+
+
+.header {
+  display: flex;
+  grid-gap: 6px;
+  padding: 20px 0;
+  align-items: center;
+}
+
+.backLink {
+  padding: 0;
+  border: 0 none;
+  border-radius: 50%;
+  width: 1.6em;
+  height: 1.6em;
+  background: #222;
+  cursor: pointer;
+  color: #fff;
+  font-size: 1em;
+  opacity: 0.15;
+  position: relative;
+  top: 2px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.backLink:hover {
+  opacity: 1;
+}
+
+
+.information {
+  margin-bottom: 20px;
+}
+
+.info {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+/* styles.module.css */
+
+.zoomContainer {
+  overflow: hidden;
+  position: relative;
+}
+
+.imageZoom {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: auto;
+  transition: transform 0.3s ease; /* Smooth transition for zoom effect */
+}
+
+.image:hover {
+  transform: scale(1.2); /* Zoom in effect on hover */
 }

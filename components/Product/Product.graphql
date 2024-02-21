@@ -20,9 +20,6 @@ query ProductQuery($filters: ProductAttributeFilterInput!) {
           }
         }
       }
-      categories {
-        id
-      }
       climate
       material
       style_general
@@ -76,6 +73,15 @@ query ProductQuery($filters: ProductAttributeFilterInput!) {
             value_index
           }
         }
+        categories{
+          uid
+          breadcrumbs{
+            category_uid
+            category_url_path
+            category_name
+          }
+        }
+        stock_status
         review_count
         reviews{
         items{
