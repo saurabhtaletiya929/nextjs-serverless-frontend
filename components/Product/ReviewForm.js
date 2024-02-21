@@ -107,7 +107,7 @@ const handleSubmit = async (e) => {
   };
 
   return (
-    <Container maxWidth='xl'>
+    <Container maxWidth='xl' sx={{m: '25px'}}>
       <Typography variant='h6'>You're reviewing:</Typography><br></br>
       <Typography className={styles.label}>Your Rating</Typography>
       <Box>
@@ -127,7 +127,7 @@ const handleSubmit = async (e) => {
               setNickname(e.target.value);
               handleInput('nickname');
             }}
-            style={{ width: "30%" }}
+            style={{ width: "70%" }}
           />
         </div>
         <Typography variant="caption" color="error">
@@ -143,7 +143,7 @@ const handleSubmit = async (e) => {
               setSummary(e.target.value);
               handleInput('summary');
             }}
-            style={{ width: "30%" }}
+            style={{ width: "70%" }}
           />
         </div>
         <Typography variant="caption" color="error">
@@ -158,7 +158,7 @@ const handleSubmit = async (e) => {
               setReviewText(e.target.value);
               handleInput('reviewText');
             }}
-            style={{ width: "30%" }}
+            style={{ width: "70%" }}
           ></TextField>
         </div>
         <Typography variant="caption" color="error">
@@ -166,7 +166,7 @@ const handleSubmit = async (e) => {
         </Typography>
 
         <div style={{margin: '20px 0'}}>
-          <Button type="submit" style={{ width: "20%" }} onClick={handleSubmit}>Submit Review</Button>
+          <Button type="submit" style={{ width: "70%" }} onClick={handleSubmit}>Submit Review</Button>
         </div>
       </Box>
     </Container>

@@ -1,0 +1,119 @@
+.dflex {
+    display: flex;
+}
+
+.flexcolumn {
+    flex-direction: column;
+}
+
+.mx3 {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.rtng {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.totalratings p {
+    margin: 0;
+}
+
+.dflex img {
+    margin-right: 0.5rem;
+}
+
+.flexgrow1 {
+    flex-grow: 1;
+}
+
+.barwrpr {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.rtngtxtwrpr {
+    display: flex;
+    align-items: center;
+}
+
+.rtngtxt {
+    font-weight: bold;
+    margin-right: 0.25rem;
+}
+
+.starimg {
+    width: 16px;
+    height: 16px;
+    margin-right: 0.25rem;
+}
+
+.middle {
+    flex-grow: 1;
+    margin: 0 1rem;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    height: 20px; /* Adjust height as needed */
+}
+
+.barcontainer {
+    height: 100%;
+    background-color: #007bff; /* Adjust color as needed */
+    border-radius: 5px;
+}
+
+.noOfReviews {
+    margin-left: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.bardisplay{
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.barcontainers {
+    height: 7px;
+    /* margin-top: 5px; */
+    width: 100%;
+    background-color: #f1f1f1;
+    border-radius: 100px;
+  }
+  
+  .bar {
+    height: 100%;
+    border-radius: 100px;
+  }
+  
+  .green {
+    background-color: green;
+  }
+  
+  .red {
+    background-color: red;
+  }
+  
+  .color5 {
+    background-color: #2ca003; 
+}
+
+.color4 {
+    background-color: #95cf81; 
+}
+
+.color3 {
+    background-color: #ffc780; 
+}
+
+.color2 {
+    background-color: #ed9c99; 
+}
+
+.color1 {
+    background-color: #ff0000c5; 
+}
+  
+  

@@ -11,7 +11,7 @@
   
   .emptyStar::before {
     content: '\2606';
-    color: gray; 
+    color: #777; 
     font-size: 1.9em;
   }
 
